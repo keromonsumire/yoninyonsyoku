@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>ブログアプリケーション</h1>
+    <a href="/create" role="button">新規作成画面</a>
+    <a href="/logout" role="button">ログアウト</a>
+    {% for blogarticle in blogarticles %}
+    <article>
+        <h2>{{ blogarticle.title }}</h2>
+        <p>作成日時：{{ blogarticle.created_at }}</p>
+        <p>{{ blogarticle.body }}</p>
+    </article>
+    {% endfor %}
+{% endblock %}
