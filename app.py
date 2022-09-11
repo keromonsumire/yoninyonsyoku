@@ -1,6 +1,9 @@
 from flask import Flask
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+
+ 
+
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from datetime import datetime
 import pytz
@@ -23,13 +26,21 @@ class User(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(50), nullable=False, unique=True)
 	password = db.Column(db.String(25))
+    blogarticle = db.relationship('blogarticle', backref='user', lazy=True)
+
 
 class BlogArticle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(500), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+
+class Tags(db.Model)
+    id = db.Column(db.Integer, primary_key=True)
  
+
+
 @app.route('/', methods=['GET'])
 def blog():
     #ユーザーがログインしていれば
@@ -77,6 +88,7 @@ def logout():
 
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
+
 def create():
     if request.method == "POST":
         title = request.form.get('title')
