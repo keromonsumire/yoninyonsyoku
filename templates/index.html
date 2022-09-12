@@ -11,6 +11,7 @@
         <p>作成日時：{{ blogarticle.created_at }}</p>
         <p>{{ blogarticle.body }}</p>
         <a href="/update/{{ blogarticle.id }}" role="button">編集</a>
+        <a href="/delete/{{ blogarticle.id }}" role="button">削除</a>
     </article>
     {% endfor %}
 {% endblock %}

@@ -112,3 +112,12 @@ def update(id):
         # 更新する場合は、add()は不要でcommit()だけでよい
         db.session.commit()
         return redirect('/')
+
+
+@app.route('/delete/<int:id>', methods=['GET'])
+def delete(id):
+    # 引数idに一致するデータを取得する
+    blogarticle = BlogArticle.query.get(id)
+    db.session.delete(blogarticle)
+    db.session.commit()
+    return redirect('/')
