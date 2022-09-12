@@ -41,12 +41,7 @@ class BlogArticle(db.Model):
 
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    
 
-
-
-
- 
 
 @app.route('/', methods=['GET'])
 def blog():
