@@ -48,7 +48,6 @@ class BlogArticle(db.Model):
 
  
 
-
 @app.route('/', methods=['GET'])
 def blog():
     #ユーザーがログインしていれば
