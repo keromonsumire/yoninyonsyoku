@@ -10,6 +10,7 @@
         <h2>{{ blogarticle.title }}</h2>
         <p>作成日時：{{ blogarticle.created_at }}</p>
         <p>{{ blogarticle.body }}</p>
+        <a href="/update/{{ blogarticle.id }}" role="button">編集</a>
     </article>
     {% endfor %}
 {% endblock %}
