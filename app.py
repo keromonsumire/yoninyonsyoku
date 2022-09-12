@@ -109,7 +109,6 @@ def create():
     else:
         return render_template('create.html')
 
-
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
     # 引数idに一致するデータを取得する
