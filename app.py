@@ -2,14 +2,13 @@ from flask import Flask
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
- 
 
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from datetime import datetime
 import pytz
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
- 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -41,12 +40,6 @@ class BlogArticle(db.Model):
 
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    
-
-
-
-
- 
 
 
 @app.route('/', methods=['GET'])
@@ -108,7 +101,6 @@ def create():
         return redirect('/')
     else:
         return render_template('create.html')
-
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):

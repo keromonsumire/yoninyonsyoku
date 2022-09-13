@@ -1,0 +1,109 @@
+@charset "UTF-8";
+
+html,
+body,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+form,
+input,
+div {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Noto Sans", "游ゴシック Medium", YuGothic, "游ゴシック体", "ヒラギノ角ゴ Pro W3", "メイリオ", sans-serif;
+  color: #333;
+}
+
+li {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.contents
+{
+  background-image:url("../../static/photo/photostudio-8-designify.png");
+  min-height: 100vh;
+  background-size: cover;
+}
+
+.contents2
+{
+  background-image:url("../../static/photo/photostudio-7-designify\ \(2\).png");
+  min-height: 100vh;
+  background-size: cover;
+}
+
+
+.content {
+  width: 1040px;
+  margin: 0 auto;
+}
+
+.signup {
+  text-align: center;
+  padding-top:60px;
+}
+
+.signup-name {
+  height: 40px;
+  width:200px;
+}
+
+
+.signup-button {
+  border-radius: 100px;
+  display: block;
+  width: 200px;
+  padding: 15px;
+  box-sizing: border-box;
+  background: #EF866B;
+  color: #FFF;
+  text-decoration: none;
+  text-align: center;
+  margin: 10px 0;
+  border: none;
+  margin-left: 75px;
+  margin-top: 40px;
+  font-size:16px;
+}
+
+.signup-button:hover 
+{
+	opacity:0.8;
+  cursor: pointer;
+}
+
+.signup-button:active 
+{
+	-webkit-transform: translate(0,2px);
+	-moz-transform: translate(0,2px);
+	transform: translate(0,2px);
+	border-bottom:none;
+  cursor: pointer;
+}
+
+
+.signup-forms {
+  width:350px;
+  margin:0 auto;
+  margin-top: 30px;
+}
+
+.password
+{
+  margin-top:20px;
+}
