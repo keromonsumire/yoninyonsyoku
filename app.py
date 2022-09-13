@@ -132,3 +132,15 @@ def delete(id):
     db.session.delete(blogarticle)
     db.session.commit()
     return redirect('/')
+
+
+
+
+
+@app.route('/user/show')
+def show_user():
+    user_id = current_user.id
+    blogarticles = BlogArticle.query.filter_by(user_id=user_id).all()
+    return render_template('show_user.html', blogarticles=blogarticles)
+
+
