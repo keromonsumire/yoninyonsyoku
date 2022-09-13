@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for blogarticle in blogarticles %}
+
+
+<article>
+
+<h1>自分の投稿一覧</h1>
+
+<h2>{{ blogarticle.title }}</h2>
+<p>作成日時：{{ blogarticle.created_at }}</p>
+<p>{{ blogarticle.body }}</p>
+<a href="/update/{{ blogarticle.id }}" role="button">編集</a>
+<a href="/delete/{{ blogarticle.id }}" role="button">削除</a>
+
+</article>
+
+{% endfor %}
+
+{% endblock %}
