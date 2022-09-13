@@ -114,7 +114,7 @@ def update(id):
         blogarticle.body = request.form.get('body')
         # 更新する場合は、add()は不要でcommit()だけでよい
         db.session.commit()
-        return redirect('/')
+        return redirect('/user/show')
 
 
 @app.route('/delete/<int:id>', methods=['GET'])
@@ -123,7 +123,7 @@ def delete(id):
     blogarticle = BlogArticle.query.get(id)
     db.session.delete(blogarticle)
     db.session.commit()
-    return redirect('/')
+    return redirect('/user/show')
 
 
 
