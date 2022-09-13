@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% block content %}
 <h1>新規登録画面</h1>
@@ -5,7 +6,7 @@
     <label for="title">タイトル</label>
     <input type="text" name="title">
     <label for="body">内容</label>
-    <input type="text" name="body">
+    <textarea rows="5" type="text" name="body"></textarea>
     <input type="submit" value="新規登録">
 </form>
 {% endblock %}
