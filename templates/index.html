@@ -8,6 +8,9 @@
     {% for blogarticle in blogarticles %}
     <article>
         <h2>{{ blogarticle.title }}</h2>
+        {% for tag in tags[blogarticle.id] %}
+        <p>{{ tag }}</p>
+        {% endfor %}
         <p>作成日時：{{ blogarticle.created_at }}</p>
         <p>{{ blogarticle.body }}</p>
     </article>

@@ -1,3 +1,4 @@
+from operator import truediv
 from flask import Flask
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
@@ -37,7 +38,20 @@ class BlogArticle(db.Model):
     body = db.Column(db.String(500), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
     
+class Tag_relation(db.Model):
+    __tablename__ = 'Tagrelation' 
+    relation_id = db.Column(db.Integer, primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('Tag.id'))
+    article_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
+
+class Tag(db.Model):
+    __tablename__ = 'Tag'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    tag_relation = db.relationship('Tag_relation', backref='Tag', lazy=True)
 
 
 
@@ -51,7 +65,23 @@ def blog():
         if request.method == 'GET':
             # DBに登録されたデータをすべて取得する
             blogarticles = BlogArticle.query.all()
-            return render_template('index.html', blogarticles=blogarticles)
+            
+            # 辞書を作成　　　辞書内に配列を作成
+            tags = {}
+            # 投稿idを取得
+            for blogarticle in blogarticles:
+                #blogarticleのidと一致するものをTag_relationから取得
+                relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
+                #配列を作成
+                box = []
+                for relation_to_tag in relation_to_tags:
+                    #Tagからnameを取得
+                    tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
+                    box.append(tag.name)
+                tags[blogarticle.id] = box
+            
+        print(tags)
+        return render_template('index.html', blogarticles=blogarticles, tags = tags)
     else:
         return redirect('/login')
 
@@ -75,6 +105,7 @@ def login():
     if request.method == "POST":
         username = request.form.get('username')
         password = request.form.get('password')
+        
         # Userテーブルからusernameに一致するユーザを取得
         user = User.query.filter_by(username=username).first()
         if check_password_hash(user.password, password):
@@ -96,10 +127,28 @@ def create():
     if request.method == "POST":
         title = request.form.get('title')
         body = request.form.get('body')
+        tag = request.form.get('tag')
+        
         # BlogArticleのインスタンスを作成
         blogarticle = BlogArticle(title=title, body=body, user_id=current_user.id)
         db.session.add(blogarticle)
         db.session.commit()
+
+        # Tagのインスタンスを作成
+        Tag_instance = Tag(name = tag)
+        db.session.add(Tag_instance)
+        db.session.commit()
+
+        #  Tag_relationにarticle_idを記録
+        # 最新のBlogArticleから、idを取得し、そのidをrticle_idとしてTag_relationに保存
+        # 最新のTagテーブルからidを取得し、そのidをTag_relationに保存
+        relation_article = BlogArticle.query.order_by(BlogArticle.id.desc()).first()
+        relation_tag= Tag.query.order_by(Tag.id.desc()).first()
+        
+        tagrelation= Tag_relation(tag_id =relation_tag.id,article_id=relation_article.id)
+        db.session.add(tagrelation)
+        db.session.commit()
+       
         return redirect('/')
     else:
         return render_template('create.html')
