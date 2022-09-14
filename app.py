@@ -59,18 +59,7 @@ def blog():
         if request.method == 'GET':
             # DBに登録されたデータをすべて取得する
             blogarticles = BlogArticle.query.all()
-            #blogarticle.idをキー,そのコンテンツの配列(その中身はタイプをキー、テキストを値とする辞書)を値とする辞書を作成
-            content = {}
-            for blogarticle in blogarticles:
-                contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
-                box = []
-                for c in contents:
-                    dic = {}
-                    dic["type"] = c.content_type
-                    dic["text"] = c.text
-                    box.append(dic)
-                content[blogarticle.id] = box
-            return render_template('index.html', blogarticles=blogarticles, content = content)
+            return render_template('index.html', blogarticles=blogarticles)
     else:
         return redirect('/login')
 
@@ -192,5 +181,3 @@ def show_article(id):
     blogarticle = BlogArticle.query.get(id)
     contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
     return render_template('show_article.html', blogarticle=blogarticle, contents=contents)
-
-
