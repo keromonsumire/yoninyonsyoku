@@ -23,8 +23,6 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class User(UserMixin, db.Model):
-
-
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
@@ -36,10 +34,9 @@ class BlogArticle(db.Model):
     __tablename__ = 'BlogArticle'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
-    body = db.Column(db.String(500), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
+    contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
     
 class Tag_relation(db.Model):
@@ -54,6 +51,13 @@ class Tag(db.Model):
     name = db.Column(db.String(50), nullable=False)
     tag_relation = db.relationship('Tag_relation', backref='Tag', lazy=True)
 
+class Content(db.Model):
+    __tablename__ = 'contents'
+    id = db.Column(db.Integer, primary_key=True)
+    blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'), nullable=False)
+    content_type = db.Column(db.String(50), nullable=False)
+    text = db.Column(db.Text)
+    seq = db.Column(db.Integer, nullable=False)
 
 
 @app.route('/', methods=['GET'])
@@ -82,6 +86,7 @@ def blog():
         return render_template('index.html', blogarticles=blogarticles, tags = tags)
     else:
         return redirect('/login')
+
 
 #ユーザー登録
 @app.route('/signup', methods=['GET', 'POST'])
@@ -124,13 +129,36 @@ def logout():
 def create():
     if request.method == "POST":
         title = request.form.get('title')
-        body = request.form.get('body')
         tag = request.form.get('tag')
         
+        headline = []
+        body = []
+        for num in range(5): 
+            body.append(request.form.get(f'body{num+1}'))
+            headline.append(request.form.get(f'headline{num+1}'))
+        
         # BlogArticleのインスタンスを作成
-        blogarticle = BlogArticle(title=title, body=body, user_id=current_user.id)
+        blogarticle = BlogArticle(title=title, user_id=current_user.id, )
         db.session.add(blogarticle)
         db.session.commit()
+
+        #最新の記事(今作成した記事)を取得
+        blog = BlogArticle.query.order_by(BlogArticle.id.desc()).limit(1).all() 
+        blog_id = blog[0].id 
+        count = 0
+        #formの数だけ繰り返す
+        for num in range(5):
+            #formが入力されていなければデータベースに入れない
+            if headline[num] != "":
+                new_headline = Content(blog_id=blog_id, content_type="headline", text=headline[num],seq=count)
+                db.session.add(new_headline)
+                count += 1
+            if body[num] != "":
+                new_body = Content(blog_id=blog_id, content_type="body", text=body[num], seq=count)
+                db.session.add(new_body)
+                count += 1
+        db.session.commit()
+
 
         # Tagのインスタンスを作成
         Tag_instance = Tag(name = tag)
@@ -147,6 +175,10 @@ def create():
         db.session.add(tagrelation)
         db.session.commit()
        
+
+
+
+
         return redirect('/')
     else:
         return render_template('create.html')
@@ -182,6 +214,20 @@ def delete(id):
 def show_user():
     user_id = current_user.id
     blogarticles = BlogArticle.query.filter_by(user_id=user_id).all()
-    return render_template('show_user.html', blogarticles=blogarticles)
+    content = {}
+    for blogarticle in blogarticles:
+        contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
+        box = []
+        for c in contents:
+            dic = {}
+            dic["type"] = c.content_type
+            dic["text"] = c.text
+            box.append(dic)
+        content[blogarticle.id] = box
+    return render_template('show_user.html', blogarticles=blogarticles, content=content)
 
-
+@app.route('/article/<int:id>')
+def show_article(id):
+    blogarticle = BlogArticle.query.get(id)
+    contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
+    return render_template('show_article.html', blogarticle=blogarticle, contents=contents)

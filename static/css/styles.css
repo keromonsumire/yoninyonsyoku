@@ -169,3 +169,16 @@ header{
   height:300px;
   object-fit: cover;
 }
+
+.headline{
+  text-decoration: underline;
+  padding-bottom:10px;
+}
+
+.title{
+  padding-bottom:10px;
+}
+
+.text{
+  padding-bottom:10px;
+}

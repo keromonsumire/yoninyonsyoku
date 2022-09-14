@@ -1,21 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% for blogarticle in blogarticles %}
-
-
-<article>
-
 <h1>自分の投稿一覧</h1>
-
-<h2>{{ blogarticle.title }}</h2>
-<p>作成日時：{{ blogarticle.created_at }}</p>
-<p>{{ blogarticle.body }}</p>
-<a href="/update/{{ blogarticle.id }}" role="button">編集</a>
-<a href="/delete/{{ blogarticle.id }}" role="button">削除</a>
-
+{% for blogarticle in blogarticles %}
+<article>
+    <h1 class="title">タイトル：{{ blogarticle.title }}</h1>
+    {% for c in content[blogarticle.id] %}
+        {% if c["type"] == "headline" %}
+        <h3 class="headline">{{ c["text"] }}</h3>
+        {% elif c["type"] == "body" %}
+        <p class="text">&nbsp;{{ c["text"] }}</p>
+        {% endif %}
+    {% endfor %}
+    <p>作成日時：{{ blogarticle.created_at }}</p>
+    <p>ユーザーid:{{ blogarticle.user_id }}</p>
+    <a href="/update/{{ blogarticle.id }}" role="button">編集</a>
+    <a href="/delete/{{ blogarticle.id }}" role="button">削除</a>
 </article>
-
 {% endfor %}
 
 {% endblock %}
