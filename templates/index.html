@@ -13,13 +13,12 @@
         {% for blogarticle in blogarticles %}
         <article>
             <a href="/article/{{ blogarticle.id }}"><h1 class="title">タイトル：{{ blogarticle.title }}</h1></a>
-
+            <p>投稿主:{{ names[blogarticle.id] }}</p>
             {% for tag in tags[blogarticle.id] %}
             <p>{{ tag }}</p>
             {% endfor %}
 
             <p>作成日時：{{ blogarticle.created_at }}</p>
-            <p>ユーザーid:{{ blogarticle.user_id }}</p>
         </article>
         {% endfor %}
 
