@@ -70,8 +70,13 @@ def blog():
             
             # 辞書を作成　　　辞書内に配列を作成
             tags = {}
+            names = {}
             # 投稿idを取得
             for blogarticle in blogarticles:
+                #blogの投稿主を取得
+                user = User.query.filter_by(id=blogarticle.user_id).all()
+                #ユーザーネームをnames辞書に記録
+                names[blogarticle.id] = user[0].username
                 #blogarticleのidと一致するものをTag_relationから取得
                 relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
                 #配列を作成
@@ -83,7 +88,8 @@ def blog():
                 tags[blogarticle.id] = box
             
         print(tags)
-        return render_template('index.html', blogarticles=blogarticles, tags = tags)
+        
+        return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
     else:
         return redirect('/login')
 
@@ -229,5 +235,7 @@ def show_user():
 @app.route('/article/<int:id>')
 def show_article(id):
     blogarticle = BlogArticle.query.get(id)
+    user = User.query.filter_by(id=blogarticle.user_id).all()
+    user_name = user[0].username
     contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
-    return render_template('show_article.html', blogarticle=blogarticle, contents=contents)
+    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name)

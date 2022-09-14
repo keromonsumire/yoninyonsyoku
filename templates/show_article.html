@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>{{ blogarticle.title }}</h1>
+    <p>投稿主：{{ user_name }}</p>
     {% for content in contents %}
         {% if content.content_type == "headline" %}
             <h3 class="headline">{{ content.text}}</h3>
@@ -8,5 +9,4 @@
             <p class="body">{{ content.text}}</p>
         {% endif %}
     {% endfor %}
-    {{ blogarticle.user_id }}
 {% endblock %}
