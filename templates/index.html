@@ -10,16 +10,19 @@
                 <li><img src="../static/photo/sample3.jpg" alt="サンプル画像" /></li>
             </ul>
         </div>
-        <h1>ブログアプリケーション</h1>
-        <a href="/create" role="button">新規作成画面</a>
-        <a href="/logout" role="button">ログアウト</a>
         {% for blogarticle in blogarticles %}
         <article>
             <a href="/article/{{ blogarticle.id }}"><h1 class="title">タイトル：{{ blogarticle.title }}</h1></a>
+
+            {% for tag in tags[blogarticle.id] %}
+            <p>{{ tag }}</p>
+            {% endfor %}
+
             <p>作成日時：{{ blogarticle.created_at }}</p>
             <p>ユーザーid:{{ blogarticle.user_id }}</p>
         </article>
         {% endfor %}
+
     </div>
 </div>
 {% endblock %}
