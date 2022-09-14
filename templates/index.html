@@ -1,10 +1,61 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>ブログアプリケーション</h1>
+<div class="contents">
+    <div class="yellow">
+        <div class="content">
+            <header>
+                <div class="header-logo">
+                    <h1>ブログアプリケーション</h1>
+                </div>
+                <div class="header-list">
+                    <ul>
+                        <li class="header-img2"><a href="/create" role="button">新規作成画面</a></li>
+                        <li class="header-img2"><a href="/user/show" role="button">自分の投稿一覧</a></li>
+                        <li class="header-img2"><a href="/signup" role="button">会員登録</a></li>
+                        <li class="header-img2"><a href="/login" role="button">ログアウト</a></li>
+                    </ul>
+                </div>
+            </header>
+            <div class="search">
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="sliders">
+            <ul id="slider" class="slider">
+                <li><img src="../static/photo/sample1.jpg" alt="サンプル画像" /></li>
+                <li><img src="../static/photo/sample2.jpg" alt="サンプル画像" /></li>
+                <li><img src="../static/photo/sample3.jpg" alt="サンプル画像" /></li>
+            </ul>
+        </div>
+    </div>
+    <div class="content">
+    {% for blogarticle in blogarticles %}
+    <article>
+        <h2>{{ blogarticle.title }}</h2>
+        {% for tag in tags[blogarticle.id] %}
+        <p>{{ tag }}</p>
+        {% endfor %}
+        <p>作成日時：{{ blogarticle.created_at }}</p>
+        <p>{{ blogarticle.body }}</p> 
+    </article>
+    {% endfor %}
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- <div class="content">
+        <h1>ブログアプリケーション</h1>
     <a href="/create" role="button">新規作成画面</a>
     <a href="/logout" role="button">ログアウト</a>
+    <a href="/user/show" role="button">自分の投稿一覧</a>
     {% for blogarticle in blogarticles %}
     <article>
         <h2>{{ blogarticle.title }}</h2>
@@ -13,7 +64,9 @@
         {% endfor %}
         <p>作成日時：{{ blogarticle.created_at }}</p>
         <p>{{ blogarticle.body }}</p>
+        
     </article>
     {% endfor %}
-{% endblock %}
-
+    </div>
+</div>
+{% endblock %} -->

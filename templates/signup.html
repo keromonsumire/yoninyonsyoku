@@ -1,11 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>ユーザ登録</h1>
-<form method="POST">
-    <label for="">ユーザ名</label>
-    <input type="text" name="username">
-    <label for="">パスワード</label>
-    <input type="password" name="password">
-    <input type="submit" value="新規登録">
-</form>
+<div class="contents2">
+    <div class="content">
+        <div class="signup">
+            <h1>会員登録</h1>
+            <div class="signup-forms">
+                <form method="POST">
+                    <table>
+                        <tr>
+                            <td><label for="">ユーザ名</label></td>
+                            <td><input type="text" name="username" class="signup-name"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="">パスワード</label></td>
+                            <td><input type="password" name="password" class="signup-name password"></td>
+                        </tr>
+                    </table>
+                    <button type="submit" class="signup-button">新規登録</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

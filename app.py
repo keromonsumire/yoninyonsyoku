@@ -3,14 +3,13 @@ from flask import Flask
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
- 
 
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from datetime import datetime
 import pytz
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
- 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -24,6 +23,8 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class User(UserMixin, db.Model):
+
+
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
@@ -53,9 +54,6 @@ class Tag(db.Model):
     name = db.Column(db.String(50), nullable=False)
     tag_relation = db.relationship('Tag_relation', backref='Tag', lazy=True)
 
-
-
- 
 
 
 @app.route('/', methods=['GET'])
@@ -140,15 +138,50 @@ def create():
         db.session.commit()
 
         #  Tag_relationにarticle_idを記録
-        # 最新のBlogArticleから、idを取得し、そのidをrticle_idとしてTag_relationに保存
+        # 最新のBlogArticleからidを取得し、そのidをarticle_idとしてTag_relationに保存
         # 最新のTagテーブルからidを取得し、そのidをTag_relationに保存
         relation_article = BlogArticle.query.order_by(BlogArticle.id.desc()).first()
-        relation_tag= Tag.query.order_by(Tag.id.desc()).first()
+        relation_tag = Tag.query.order_by(Tag.id.desc()).first()
         
-        tagrelation= Tag_relation(tag_id =relation_tag.id,article_id=relation_article.id)
+        tagrelation = Tag_relation(tag_id =relation_tag.id, article_id=relation_article.id)
         db.session.add(tagrelation)
         db.session.commit()
        
         return redirect('/')
     else:
         return render_template('create.html')
+
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
+def update(id):
+    # 引数idに一致するデータを取得する
+    blogarticle = BlogArticle.query.get(id)
+    if request.method == "GET":
+        return render_template('update.html', blogarticle=blogarticle)
+    else:
+        # 上でインスタンス化したblogarticleのプロパティを更新する
+        blogarticle.title = request.form.get('title')
+        blogarticle.body = request.form.get('body')
+        # 更新する場合は、add()は不要でcommit()だけでよい
+        db.session.commit()
+        return redirect('/user/show')
+
+
+@app.route('/delete/<int:id>', methods=['GET'])
+def delete(id):
+    # 引数idに一致するデータを取得する
+    blogarticle = BlogArticle.query.get(id)
+    db.session.delete(blogarticle)
+    db.session.commit()
+    return redirect('/user/show')
+
+
+
+
+
+@app.route('/user/show')
+def show_user():
+    user_id = current_user.id
+    blogarticles = BlogArticle.query.filter_by(user_id=user_id).all()
+    return render_template('show_user.html', blogarticles=blogarticles)
+
+
