@@ -175,6 +175,22 @@ def delete(id):
 def show_user():
     user_id = current_user.id
     blogarticles = BlogArticle.query.filter_by(user_id=user_id).all()
-    return render_template('show_user.html', blogarticles=blogarticles)
+    content = {}
+    for blogarticle in blogarticles:
+        contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
+        box = []
+        for c in contents:
+            dic = {}
+            dic["type"] = c.content_type
+            dic["text"] = c.text
+            box.append(dic)
+        content[blogarticle.id] = box
+    return render_template('show_user.html', blogarticles=blogarticles, content=content)
+
+@app.route('/article/<int:id>')
+def show_article(id):
+    blogarticle = BlogArticle.query.get(id)
+    contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
+    return render_template('show_article.html', blogarticle=blogarticle, contents=contents)
 
 

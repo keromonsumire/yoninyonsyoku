@@ -2,25 +2,6 @@
 
 {% block content %}
 <div class="contents">
-    <div class="yellow">
-        <div class="content">
-            <header>
-                <div class="header-logo">
-                    <h1>ブログアプリケーション</h1>
-                </div>
-                <div class="header-list">
-                    <ul>
-                        <li class="header-img2"><a href="/create" role="button">新規作成画面</a></li>
-                        <li class="header-img2"><a href="/user/show" role="button">自分の投稿一覧</a></li>
-                        <li class="header-img2"><a href="/signup" role="button">会員登録</a></li>
-                        <li class="header-img2"><a href="/login" role="button">ログアウト</a></li>
-                    </ul>
-                </div>
-            </header>
-            <div class="search">
-            </div>
-        </div>
-    </div>
     <div class="content">
         <div class="sliders">
             <ul id="slider" class="slider">
@@ -34,18 +15,9 @@
         <a href="/logout" role="button">ログアウト</a>
         {% for blogarticle in blogarticles %}
         <article>
-            <h1 class="title">タイトル：{{ blogarticle.title }}</h1>
-            {% for c in content[blogarticle.id] %}
-                {% if c["type"] == "headline" %}
-                <h3 class="headline">{{ c["text"] }}</h3>
-                {% elif c["type"] == "body" %}
-                <p class="text">&nbsp;{{ c["text"] }}</p>
-                {% endif %}
-            {% endfor %}
+            <a href="/article/{{ blogarticle.id }}"><h1 class="title">タイトル：{{ blogarticle.title }}</h1></a>
             <p>作成日時：{{ blogarticle.created_at }}</p>
             <p>ユーザーid:{{ blogarticle.user_id }}</p>
-            <a href="/update/{{ blogarticle.id }}" role="button">編集</a>
-            <a href="/delete/{{ blogarticle.id }}" role="button">削除</a>
         </article>
         {% endfor %}
     </div>
