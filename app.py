@@ -86,10 +86,9 @@ def blog():
                     tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
                     box.append(tag.name)
                 tags[blogarticle.id] = box
-            
-        print(tags)
         
         return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+
     else:
         return redirect('/login')
 
@@ -135,13 +134,14 @@ def logout():
 def create():
     if request.method == "POST":
         title = request.form.get('title')
-        tag = request.form.get('tag')
-        
+        #tag = request.form.get('tag')
+        tag = []
         headline = []
         body = []
         for num in range(5): 
             body.append(request.form.get(f'body{num+1}'))
             headline.append(request.form.get(f'headline{num+1}'))
+            tag.append(request.form.get(f'tag{num+1}'))
         
         # BlogArticleのインスタンスを作成
         blogarticle = BlogArticle(title=title, user_id=current_user.id, )
@@ -164,27 +164,25 @@ def create():
                 db.session.add(new_body)
                 count += 1
         db.session.commit()
-
-
-        # Tagのインスタンスを作成
-        Tag_instance = Tag(name = tag)
-        db.session.add(Tag_instance)
+        # Tagのインスタンスを作成, Tagのテーブルに追加
+        count_tag = 0
+        #formの数だけ繰り返す
+        for num in range(5):
+            #formが入力されていなければデータベースに入れない
+            if tag[num] != "":
+                new_tag = Tag(name = tag[num])
+                db.session.add(new_tag)
+                count_tag += 1
         db.session.commit()
 
-        #  Tag_relationにarticle_idを記録
-        # 最新のBlogArticleからidを取得し、そのidをarticle_idとしてTag_relationに保存
-        # 最新のTagテーブルからidを取得し、そのidをTag_relationに保存
-        relation_article = BlogArticle.query.order_by(BlogArticle.id.desc()).first()
-        relation_tag = Tag.query.order_by(Tag.id.desc()).first()
-        
-        tagrelation = Tag_relation(tag_id =relation_tag.id, article_id=relation_article.id)
-        db.session.add(tagrelation)
+        #ひとつの投稿に何個のタグがあるか取得
+        relation_tag = Tag.query.order_by(Tag.id.desc()).limit(count_tag)
+
+        for num in range(count_tag):
+            tagrelation = Tag_relation(tag_id =relation_tag[num].id, article_id=blog_id)
+            db.session.add(tagrelation)
         db.session.commit()
        
-
-
-
-
         return redirect('/')
     else:
         return render_template('create.html')
@@ -230,7 +228,22 @@ def show_user():
             dic["text"] = c.text
             box.append(dic)
         content[blogarticle.id] = box
-    return render_template('show_user.html', blogarticles=blogarticles, content=content)
+        
+    # 辞書を作成　　　辞書内に配列を作成
+    tags = {}
+    # 投稿idを取得
+    for blogarticle in blogarticles:
+        #blogarticleのidと一致するものをTag_relationから取得        
+        relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
+            #配列を作成
+        box = []
+        for relation_to_tag in relation_to_tags:
+            #Tagからnameを取得
+            tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
+            box.append(tag.name)
+        tags[blogarticle.id] = box
+
+    return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags)
 
 @app.route('/article/<int:id>')
 def show_article(id):
