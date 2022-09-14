@@ -5,6 +5,9 @@
 {% for blogarticle in blogarticles %}
 <article>
     <h1 class="title">タイトル：{{ blogarticle.title }}</h1>
+    {% for tag in tags[blogarticle.id] %}
+    <p>{{ tag }}</p>
+    {% endfor %}
     {% for c in content[blogarticle.id] %}
         {% if c["type"] == "headline" %}
         <h3 class="headline">{{ c["text"] }}</h3>
