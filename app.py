@@ -1,3 +1,4 @@
+import numbers
 from operator import truediv
 from flask import Flask
 from flask import render_template, request, redirect, url_for, session
@@ -29,7 +30,6 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(25))
     blogarticles = db.relationship('BlogArticle', backref='users', lazy=True)
-
 
 class BlogArticle(db.Model):
     __tablename__ = 'BlogArticle'
@@ -167,22 +167,27 @@ def create():
                 count += 1
         db.session.commit()
         # Tagのインスタンスを作成, Tagのテーブルに追加
-        count_tag = 0
+        count_newtag = 0
         #formの数だけ繰り返す
         for num in range(5):
             #formが入力されていなければデータベースに入れない
             if tag[num] != "":
-                new_tag = Tag(name = tag[num])
-                db.session.add(new_tag)
-                count_tag += 1
+                tag_existance = Tag.query.filter_by(name = tag[num]).first()
+                # tag_existanceがNoneであれば、新しくTagテーブルに追加
+                if tag_existance is None:
+                    new_tag = Tag(name = tag[num]).first()
+                    db.session.add(new_tag)
+                    count_newtag += 1
         db.session.commit()
 
-        #ひとつの投稿に何個のタグがあるか取得
-        relation_tag = Tag.query.order_by(Tag.id.desc()).limit(count_tag)
-
-        for num in range(count_tag):
-            tagrelation = Tag_relation(tag_id =relation_tag[num].id, article_id=blog_id)
-            db.session.add(tagrelation)
+        for num in range(len(tag)):
+            #Tagテーブルの中に存在するか調べる
+            tag_existance = Tag.query.filter_by(name = tag[num]).first()
+            #もし存在すれば、Tag_relationに追加
+            if  tag_existance is not None:
+                tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=blog_id).first()
+                print(tagrelation)
+                db.session.add(tagrelation)
         db.session.commit()
         
         session["blog_id"] = blog[0].id
