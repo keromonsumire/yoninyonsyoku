@@ -2,6 +2,7 @@
 {% block content %}
     <h1>{{ blogarticle.title }}</h1>
     <p>投稿主：{{ user_name }}</p>
+    <img src="../static/image/{{ blogarticle.image }}">
     {% for content in contents %}
         {% if content.content_type == "headline" %}
             <h3 class="headline">{{ content.text}}</h3>
