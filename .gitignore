@@ -105,4 +105,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 blog.db
-static/image
+/static/image
+
+
