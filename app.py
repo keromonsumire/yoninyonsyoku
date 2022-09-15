@@ -1,14 +1,15 @@
 from operator import truediv
 from flask import Flask
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 
 
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from datetime import datetime
 import pytz
-import os
+import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
+from PIL import Image
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -38,6 +39,7 @@ class BlogArticle(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
+    image = db.Column(db.String(100))
     
 class Tag_relation(db.Model):
     __tablename__ = 'Tagrelation' 
@@ -54,7 +56,7 @@ class Tag(db.Model):
 class Content(db.Model):
     __tablename__ = 'contents'
     id = db.Column(db.Integer, primary_key=True)
-    blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'), nullable=False)
+    blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
     content_type = db.Column(db.String(50), nullable=False)
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
@@ -182,12 +184,13 @@ def create():
             tagrelation = Tag_relation(tag_id =relation_tag[num].id, article_id=blog_id)
             db.session.add(tagrelation)
         db.session.commit()
-       
-        return redirect('/')
+        
+        session["blog_id"] = blog[0].id
+        return redirect('/upload')
     else:
         return render_template('create.html')
 
-@app.route('/update/<int:id>', methods=['GET', 'POST'])
+@app.route('/update/<int:id>',methods=['GET', 'POST'])
 def update(id):
     # 引数idに一致するデータを取得する
     blogarticle = BlogArticle.query.get(id)
@@ -252,3 +255,28 @@ def show_article(id):
     user_name = user[0].username
     contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
     return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name)
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'GET':
+        return render_template('upload.html')
+    elif request.method == 'POST':
+        file = request.files['image']
+        file.save(os.path.join('./static/image', file.filename))
+        im = Image.open(f"./static/image/{file.filename}")
+        out = im.resize((128, 128))
+        out.save(f"./static/image/{file.filename}")
+                    
+        blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
+        blogarticle[0].image = file.filename
+
+        db.session.commit()
+        return redirect('/')
+
+@app.route('/uploaded_file/<string:filename>')
+def uploaded_file(filename):
+    return render_template('uploaded_file.html', filename=filename)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
