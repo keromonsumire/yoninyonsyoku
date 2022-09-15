@@ -175,7 +175,7 @@ def create():
                 tag_existance = Tag.query.filter_by(name = tag[num]).first()
                 # tag_existanceがNoneであれば、新しくTagテーブルに追加
                 if tag_existance is None:
-                    new_tag = Tag(name = tag[num]).first()
+                    new_tag = Tag(name = tag[num])
                     db.session.add(new_tag)
                     count_newtag += 1
         db.session.commit()
@@ -185,7 +185,7 @@ def create():
             tag_existance = Tag.query.filter_by(name = tag[num]).first()
             #もし存在すれば、Tag_relationに追加
             if  tag_existance is not None:
-                tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=blog_id).first()
+                tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=blog_id)
                 print(tagrelation)
                 db.session.add(tagrelation)
         db.session.commit()
