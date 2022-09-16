@@ -15,4 +15,10 @@ $(function() {
       return false;
     }
   });
+
+  $("#slider").slick({
+    "autoplay":true,
+    "autoplayaround":1000
+  });
+
 });

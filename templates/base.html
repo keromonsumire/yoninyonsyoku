@@ -19,6 +19,40 @@
         <link href="../static/css/styles.css" rel="stylesheet">
     </head>
     <body>
+        <div class="yellow">
+            <div class="content">
+                <header>
+                    <div class="header-logo">
+                        <h1>ブログアプリケーション</h1>
+                    </div>
+                    <div class="header-list">
+                        <ul>
+                            {% if current_user.is_authenticated == True %}
+                            <li class="header-img2"><a href="/">みんなの投稿一覧</a></li>
+                            <li class="header-img2"><a href="/create" role="button">新規作成画面</a></li>
+                            <li class="header-img2"><a href="/user/show" role="button">自分の投稿一覧</a></li>
+                            <li class="header-img2"><a href="/logout" role="button">ログアウト</a></li>
+                            {% else %}
+                            <li class="header-img2"><a href="/signup" role="button">ユーザー登録</a></li>
+                            <li class="header-img2"><a href="/login" role="button">ログイン</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </header>
+                <div class="search">
+                </div>
+            </div>
+        </div>
+        <!-- flashメッセージ -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li class="message">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
         {% block content %}
         {% endblock %}
     </body>
