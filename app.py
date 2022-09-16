@@ -1,7 +1,7 @@
 import numbers
 from operator import truediv
 from flask import Flask
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -102,10 +102,14 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
         # Userのインスタンスを作成
-        user = User(username=username, password=generate_password_hash(password, method='sha256'))
-        db.session.add(user)
-        db.session.commit()
-        return redirect('/login')
+        if User.query.filter_by(username=username).all() is None:
+            user = User(username=username, password=generate_password_hash(password, method='sha256'))
+            db.session.add(user)
+            db.session.commit()
+            return redirect('/login')
+        else:
+            flash('そのユーザー名はすでに登録されています')
+            return render_template('signup.html')
     else:
         return render_template('signup.html')
 
@@ -118,9 +122,16 @@ def login():
         
         # Userテーブルからusernameに一致するユーザを取得
         user = User.query.filter_by(username=username).first()
-        if check_password_hash(user.password, password):
+        if user == None:
+            flash('そのユーザー名は存在しません')
+            return render_template('login.html')
+        elif check_password_hash(user.password, password):
             login_user(user)
+            session["is_login"] = True
             return redirect('/')
+        else:
+            flash("メールアドレスもしくはパスワードが異なります")
+            return render_template('login.html')
     else:
         return render_template('login.html')
 
@@ -128,6 +139,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session["is_login"] = False
     return redirect('/login')
 
 @app.route('/create', methods=['GET', 'POST'])
