@@ -102,11 +102,15 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
         # Userのインスタンスを作成
-        if User.query.filter_by(username=username).all() is None:
-            user = User(username=username, password=generate_password_hash(password, method='sha256'))
-            db.session.add(user)
-            db.session.commit()
-            return redirect('/login')
+        if User.query.filter_by(username=username).first() is None:
+            if username == '' or password == '':
+                flash('ユーザー名とパスワードを入力してください')
+                return render_template('signup.html')
+            else:
+                user = User(username=username, password=generate_password_hash(password, method='sha256'))
+                db.session.add(user)
+                db.session.commit()
+                return redirect('/login')
         else:
             flash('そのユーザー名はすでに登録されています')
             return render_template('signup.html')
