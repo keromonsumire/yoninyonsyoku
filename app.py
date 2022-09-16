@@ -52,6 +52,7 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     tag_relation = db.relationship('Tag_relation', backref='Tag', lazy=True)
+    type_id = db.Column(db.Integer)
 
 class Content(db.Model):
     __tablename__ = 'contents'
@@ -152,14 +153,11 @@ def logout():
 def create():
     if request.method == "POST":
         title = request.form.get('title')
-        #tag = request.form.get('tag')
-        tag = []
         headline = []
         body = []
         for num in range(5): 
             body.append(request.form.get(f'body{num+1}'))
             headline.append(request.form.get(f'headline{num+1}'))
-            tag.append(request.form.get(f'tag{num+1}'))
         
         # BlogArticleのインスタンスを作成
         blogarticle = BlogArticle(title=title, user_id=current_user.id, )
@@ -182,34 +180,44 @@ def create():
                 db.session.add(new_body)
                 count += 1
         db.session.commit()
-        # Tagのインスタンスを作成, Tagのテーブルに追加
-        count_newtag = 0
-        #formの数だけ繰り返す
-        for num in range(5):
-            #formが入力されていなければデータベースに入れない
+
+        session["blog_id"] = blog[0].id
+        return redirect('/create/tag')
+    else:
+        return render_template('create.html')
+
+@app.route('/create/tag',methods=['GET', 'POST'])
+def create_tag():
+    blogarticle = BlogArticle.query.get(session["blog_id"])
+    if request.method == "GET":
+        return render_template('create_tag.html')
+    else:
+        tag = []
+        for number in range(5): 
+            for num in range(5):
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+        for num in range(25):
+            #tagが入力されていなければデータベースに入れない
             if tag[num] != "":
                 tag_existance = Tag.query.filter_by(name = tag[num]).first()
                 # tag_existanceがNoneであれば、新しくTagテーブルに追加
                 if tag_existance is None:
                     new_tag = Tag(name = tag[num])
                     db.session.add(new_tag)
-                    count_newtag += 1
         db.session.commit()
-
-        for num in range(len(tag)):
-            #Tagテーブルの中に存在するか調べる
-            tag_existance = Tag.query.filter_by(name = tag[num]).first()
-            #もし存在すれば、Tag_relationに追加
-            if  tag_existance is not None:
-                tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=blog_id)
-                print(tagrelation)
-                db.session.add(tagrelation)
+        for number in range(5):
+            for num in range(5):
+                #Tagテーブルの中に存在するか調べる
+                tag_existance = Tag.query.filter_by(name = tag[number * 5 + num]).first()
+                #もし存在すれば、Tag_relationに追加
+                if  tag_existance is not None:
+                    tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=session["blog_id"])
+                    print(tagrelation)
+                    tag_existance.type_id = number + 1
+                    db.session.add(tagrelation)
         db.session.commit()
-        
-        session["blog_id"] = blog[0].id
         return redirect('/upload')
-    else:
-        return render_template('create.html')
+
 
 @app.route('/update/<int:id>',methods=['GET', 'POST'])
 def update(id):
