@@ -160,7 +160,7 @@ header{
 {
   width:60%;
   margin:0 auto;
-  margin-top:50px;
+  padding-top:50px;
 }
 
 .slider img
@@ -182,6 +182,13 @@ header{
 .text{
   padding-bottom:10px;
 }
+
+/* create.htmlについて */
+.element2, .element3, .element4, .element5
+{
+  display:none;
+}  
+
 
 /* 入力フォームを縦に伸ばさない */
 textarea{
