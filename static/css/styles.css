@@ -202,3 +202,8 @@ textarea{
   text-align:center;
   background: rgba(255,0,0,0.5)
 }
+
+/* 改行を反映させる　*/
+p {
+  white-space: pre-wrap;
+}
