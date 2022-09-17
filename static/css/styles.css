@@ -160,7 +160,7 @@ header{
 {
   width:60%;
   margin:0 auto;
-  margin-top:50px;
+  padding-top:50px;
 }
 
 .slider img
@@ -183,6 +183,13 @@ header{
   padding-bottom:10px;
 }
 
+/* create.htmlについて */
+.element2, .element3, .element4, .element5
+{
+  display:none;
+}  
+
+
 /* 入力フォームを縦に伸ばさない */
 textarea{
   vertical-align: middle;
@@ -194,4 +201,9 @@ textarea{
   padding-bottom:10px;
   text-align:center;
   background: rgba(255,0,0,0.5)
+}
+
+/* 改行を反映させる　*/
+p {
+  white-space: pre-wrap;
 }
