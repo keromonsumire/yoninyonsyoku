@@ -286,7 +286,12 @@ def show_article(id):
     user = User.query.filter_by(id=blogarticle.user_id).all()
     user_name = user[0].username
     contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
-    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name)
+    tag_relations = Tag_relation.query.filter_by(article_id = id).all()
+    tags = []
+    for relation in tag_relations:
+        tag = Tag.query.filter_by(id=relation.tag_id).first()
+        tags.append(tag)
+    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
