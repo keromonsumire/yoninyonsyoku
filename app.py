@@ -215,12 +215,14 @@ def create():
 def update(id):
     # 引数idに一致するデータを取得する
     blogarticle = BlogArticle.query.get(id)
+    content = Content.query.filter_by(blog_id=id).all()
     if request.method == "GET":
-        return render_template('update.html', blogarticle=blogarticle)
+        return render_template('update.html', blogarticle=blogarticle, content=content)
     else:
         # 上でインスタンス化したblogarticleのプロパティを更新する
         blogarticle.title = request.form.get('title')
-        blogarticle.body = request.form.get('body')
+        content.content_type = request.form.get('content_type')
+        content.text = request.form.get('text')
         # 更新する場合は、add()は不要でcommit()だけでよい
         db.session.commit()
         return redirect('/user/show')
