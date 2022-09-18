@@ -63,7 +63,7 @@ class Content(db.Model):
     seq = db.Column(db.Integer, nullable=False)
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def blog():
     #ユーザーがログインしていれば
     if current_user.is_authenticated:
@@ -89,11 +89,74 @@ def blog():
                     tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
                     box.append(tag.name)
                 tags[blogarticle.id] = box
+
+
+
+            #タイプで検索をする
+            types = request.args.getlist("type")
+
         
-        return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+            return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
+        else:
+            #タイプで検索をする
+            # checkboxからtypeを取得
+            types = request.args.getlist("type")
+            print(type(types))
+            
+            # 辞書を作成　　　辞書内に配列を作成
+            #tags = {}
+            #names = {}
+            # DBに登録されたデータをすべて取得する
+            #tags = Tag.query.all()
+            # Tagの　typeをを取得
+            #for blogarticle in blogarticles:
+                #blogの投稿主を取得
+                #user = User.query.filter_by(id=blogarticle.user_id).all()
+                #ユーザーネームをnames辞書に記録
+                #names[blogarticle.id] = user[0].username
+                #blogarticleのidと一致するものをTag_relationから取得
+                #relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
+                #配列を作成
+                #box = []
+                #for relation_to_tag in relation_to_tags:
+                    #Tagからnameを取得
+                    #tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
+                    #box.append(tag.name)
+                #tags[blogarticle.id] = box
+
+
+
+
+            return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
+
 
     else:
+        
         return redirect('/login')
+
+#タイプによる登録
+@app.route('/search', methods=['GET', 'POST'])
+def signup():
+    if request.method == "POST":
+        username = request.form.get('username')
+        password = request.form.get('password')
+        # Userのインスタンスを作成
+        if User.query.filter_by(username=username).first() is None:
+            if username == '' or password == '':
+                flash('ユーザー名とパスワードを入力してください')
+                return render_template('signup.html')
+            else:
+                user = User(username=username, password=generate_password_hash(password, method='sha256'))
+                db.session.add(user)
+                db.session.commit()
+                return redirect('/login')
+        else:
+            flash('そのユーザー名はすでに登録されています')
+            return render_template('sesarch.html')
+    else:
+        return render_template('index.html')
+
+
 
 
 #ユーザー登録
