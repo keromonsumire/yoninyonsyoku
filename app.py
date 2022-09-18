@@ -31,6 +31,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(25))
     blogarticles = db.relationship('BlogArticle', backref='users', lazy=True)
 
+
 class BlogArticle(db.Model):
     __tablename__ = 'BlogArticle'
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +41,7 @@ class BlogArticle(db.Model):
     contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
     image = db.Column(db.String(100))
+
     
 class Tag_relation(db.Model):
     __tablename__ = 'Tagrelation' 
@@ -94,7 +96,6 @@ def blog():
                 tags[blogarticle.id] = box
         
         return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
-
     else:
         return redirect('/login')
 
@@ -205,7 +206,12 @@ def create():
 def create_tag():
     blogarticle = BlogArticle.query.get(session["blog_id"])
     if request.method == "GET":
-        return render_template('create_tag.html')
+        tag1 = Tag.query.filter_by(type_id=1).all()
+        tag2 = Tag.query.filter_by(type_id=2).all()
+        tag3 = Tag.query.filter_by(type_id=3).all()
+        tag4 = Tag.query.filter_by(type_id=4).all()
+        tag5 = Tag.query.filter_by(type_id=5).all()
+        return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
         tag = []
         for number in range(5): 
@@ -230,6 +236,11 @@ def create_tag():
                     print(tagrelation)
                     tag_existance.type_id = number + 1
                     db.session.add(tagrelation)
+        existing_tag_ids = request.form.getlist("existing")
+        print(existing_tag_ids)
+        for tag_id in existing_tag_ids:
+            tagrelation = Tag_relation(tag_id=tag_id, article_id=session["blog_id"])
+            db.session.add(tagrelation)
         db.session.commit()
         return redirect('/upload')
 
