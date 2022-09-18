@@ -161,31 +161,43 @@ def create():
         for num in range(5): 
             body.append(request.form.get(f'body{num+1}'))
             headline.append(request.form.get(f'headline{num+1}'))
-        
-        # BlogArticleのインスタンスを作成
-        blogarticle = BlogArticle(title=title, user_id=current_user.id, )
-        db.session.add(blogarticle)
-        db.session.commit()
+        if title == "":
+            flash('タイトルを入力してください')
+            return render_template("create.html")
+        elif len(title) > 50:
+            flash('タイトルは50文字以下にしてください')
+            return render_template("create.html")
+        elif headline[0] == "":
+            flash('見出しを入力してください')
+            return render_template("create.html")
+        elif body[0] == "":
+            flash('内容を入力してください')
+            return render_template("create.html")
+        else:
+            # BlogArticleのインスタンスを作成
+            blogarticle = BlogArticle(title=title, user_id=current_user.id, )
+            db.session.add(blogarticle)
+            db.session.commit()
 
-        #最新の記事(今作成した記事)を取得
-        blog = BlogArticle.query.order_by(BlogArticle.id.desc()).limit(1).all() 
-        blog_id = blog[0].id 
-        count = 0
-        #formの数だけ繰り返す
-        for num in range(5):
-            #formが入力されていなければデータベースに入れない
-            if headline[num] != "":
-                new_headline = Content(blog_id=blog_id, content_type="headline", text=headline[num],seq=count)
-                db.session.add(new_headline)
-                count += 1
-            if body[num] != "":
-                new_body = Content(blog_id=blog_id, content_type="body", text=body[num], seq=count)
-                db.session.add(new_body)
-                count += 1
-        db.session.commit()
+            #最新の記事(今作成した記事)を取得
+            blog = BlogArticle.query.order_by(BlogArticle.id.desc()).limit(1).all() 
+            blog_id = blog[0].id 
+            count = 0
+            #formの数だけ繰り返す
+            for num in range(5):
+                #formが入力されていなければデータベースに入れない
+                if headline[num] != "":
+                    new_headline = Content(blog_id=blog_id, content_type="headline", text=headline[num],seq=count)
+                    db.session.add(new_headline)
+                    count += 1
+                if body[num] != "":
+                    new_body = Content(blog_id=blog_id, content_type="body", text=body[num], seq=count)
+                    db.session.add(new_body)
+                    count += 1
+            db.session.commit()
 
-        session["blog_id"] = blog[0].id
-        return redirect('/create/tag')
+            session["blog_id"] = blog[0].id
+            return redirect('/create/tag')
     else:
         return render_template('create.html')
 
