@@ -26,10 +26,10 @@
         {% for blogarticle in blogarticles %}
         <article>
             <img src="../static/image/{{ blogarticle.image }}">
-            <a href="/article/{{ blogarticle.id }}"><h1 class="title">タイトル：{{ blogarticle.title }}</h1></a>
+            <a href="/article/{{ blogarticle.id }}"><h1 class="title">{{ blogarticle.title }}</h1></a>
             <p>投稿主:{{ names[blogarticle.id] }}</p>
             {% for tag in tags[blogarticle.id] %}
-            <p>{{ tag }}</p>
+            <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
             {% endfor %}
 
             <p>作成日時：{{ blogarticle.created_at }}</p>

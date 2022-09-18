@@ -86,8 +86,11 @@ def blog():
                 box = []
                 for relation_to_tag in relation_to_tags:
                     #Tagからnameを取得
+                    tag_dict = {}
                     tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
-                    box.append(tag.name)
+                    tag_dict["name"] = tag.name
+                    tag_dict["type"] = tag.type_id
+                    box.append(tag_dict)
                 tags[blogarticle.id] = box
 
 
@@ -346,7 +349,12 @@ def show_article(id):
     user = User.query.filter_by(id=blogarticle.user_id).all()
     user_name = user[0].username
     contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
-    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name)
+    tag_relations = Tag_relation.query.filter_by(article_id = id).all()
+    tags = []
+    for relation in tag_relations:
+        tag = Tag.query.filter_by(id=relation.tag_id).first()
+        tags.append(tag)
+    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
