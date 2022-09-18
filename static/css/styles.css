@@ -33,6 +33,12 @@ table {
   border-collapse: collapse;
 }
 
+button{
+  cursor: pointer;
+}
+
+/* 背景の色と画面について */
+
 .contents
 {
   background-color: #f3f0e9;
@@ -65,7 +71,7 @@ table {
 }
 
 
-.signup-button {
+.button {
   border-radius: 100px;
   display: block;
   width: 200px;
@@ -82,13 +88,13 @@ table {
   font-size:16px;
 }
 
-.signup-button:hover 
+.button:hover 
 {
 	opacity:0.8;
   cursor: pointer;
 }
 
-.signup-button:active 
+.button:active 
 {
 	-webkit-transform: translate(0,2px);
 	-moz-transform: translate(0,2px);
@@ -184,10 +190,79 @@ header{
 }
 
 /* create.htmlについて */
+.element1
+{
+  padding-top:30px;
+}
+
 .element2, .element3, .element4, .element5
 {
   display:none;
+  padding-top:20px;
 }  
+
+.space
+{
+  padding-top:15px;
+}
+
+.create-contents
+{
+  width: 650px;
+  background-color: #f7f7f7;
+  margin:0 auto;
+  margin-top:15px;
+  padding-top:40px;
+  padding-bottom:25px;
+}
+
+.create-contents2
+{
+  width: 550px;
+  background-color: #f7f7f7;
+  margin:0 auto;
+}
+
+.create-contents2 input
+{
+  display:block;
+  margin: 0 auto;
+}
+
+.create-contents2 textarea
+{
+  display: block;
+  width:80%;
+  margin: 0 auto;
+}
+
+.create-h1
+{
+  text-align: center;
+}
+
+.create-title
+{
+  width:80%;
+  margin:0 auto;
+  height:50px;
+}
+
+.create-content
+{
+  width:80%;
+  height:50px;
+}
+
+.create-buttons
+{
+  text-align: right;
+}
+
+.create-button1,.create-button5,.create-button6,.create-button7,.create-button8
+{
+  margin-right:55px;
+}
 
 
 /* 入力フォームを縦に伸ばさない */
@@ -207,3 +282,29 @@ textarea{
 p {
   white-space: pre-wrap;
 }
+
+.tag1{
+  background-color:gray;
+  color:white;
+}
+
+.tag2{
+  background-color:red;
+  color:white;
+}
+
+.tag3{
+  background-color:blue;
+  color:white;
+}
+
+.tag4{
+  background-color:green;
+  color:white;
+}
+
+.tag5{
+  background-color:purple;
+  color:white;
+}
+
