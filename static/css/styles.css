@@ -276,6 +276,35 @@ header{
   margin-top:5px;
 }
 
+/* create_tag.htmlについて */
+.tag-h1
+{
+  text-align: center;
+}
+
+.bluetags
+{
+  padding-top:15px;
+}
+
+.bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1
+{
+  display:none;
+}
+
+.bluetags2,.orangetags2,.redtags2,.greentags2,.yellowtags2
+{
+  display:none;
+}
+
+
+.create-tag
+{
+  border:none;
+  margin:0;
+  display:inline-block;
+}
+
 /* 入力フォームを縦に伸ばさない */
 textarea{
   vertical-align: middle;
@@ -289,33 +318,33 @@ textarea{
   background: rgba(255,0,0,0.5)
 }
 
-/* 改行を反映させる　*/
+/* 改行を反映させる*/
 p {
   white-space: pre-wrap;
 }
 
 .tag1{
-  background-color:gray;
-  color:white;
+  background-color:lightblue;
+  color:#333;
 }
 
 .tag2{
-  background-color:red;
-  color:white;
+  background-color:lightsalmon;
+  color:#333;
 }
 
 .tag3{
-  background-color:blue;
-  color:white;
+  background-color:lightcoral;
+  color:#333;
 }
 
 .tag4{
-  background-color:green;
-  color:white;
+  background-color:lightgreen;
+  color:#333;
 }
 
 .tag5{
-  background-color:purple;
-  color:white;
+  background-color:lightyellow;
+  color:#333;
 }
 
