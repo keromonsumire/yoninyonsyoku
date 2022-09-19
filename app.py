@@ -65,14 +65,13 @@ class Content(db.Model):
     seq = db.Column(db.Integer, nullable=False)
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def blog():
     #ユーザーがログインしていれば
     if current_user.is_authenticated:
         if request.method == 'GET':
             # DBに登録されたデータをすべて取得する
             blogarticles = BlogArticle.query.all()
-            
             # 辞書を作成　　　辞書内に配列を作成
             tags = {}
             names = {}
@@ -94,10 +93,106 @@ def blog():
                     tag_dict["type"] = tag.type_id
                     box.append(tag_dict)
                 tags[blogarticle.id] = box
-        
-        return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+
+
+            return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+                    #タイプで検索をする # checkboxからtypeを取得
+        elif request.method == "POST":
+            types = request.form.getlist("check")
+            ##もしなにも選択していない場合  ##までつづく
+            if types == []:
+                            # DBに登録されたデータをすべて取得する
+                blogarticles = BlogArticle.query.all()
+                # 辞書を作成　　　辞書内に配列を作成
+                tags = {}
+                names = {}
+                # 投稿idを取得
+                for blogarticle in blogarticles:
+                    #blogの投稿主を取得
+                    user = User.query.filter_by(id=blogarticle.user_id).all()
+                    #ユーザーネームをnames辞書に記録
+                    names[blogarticle.id] = user[0].username
+                    #blogarticleのidと一致するものをTag_relationから取得
+                    relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
+                    #配列を作成
+                    box = []
+                    for relation_to_tag in relation_to_tags:
+                        #Tagからnameを取得
+                        tag_dict = {}
+                        tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
+                        tag_dict["name"] = tag.name
+                        tag_dict["type"] = tag.type_id
+                        box.append(tag_dict)
+                    tags[blogarticle.id] = box
+                flash('チェック入れて検索してください')
+                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+                ##
+            #checkboxでチェックを入れたタイプからTagのインスタンスを生成
+            tags = Tag.query.filter(Tag.type_id.in_(types)).all()
+            #tagsのid==Tagrelationsのtag_idであるTag_relationのインスタンスを作成し、article_idの配列をつくる
+            #配列を作成
+            relation_box = []
+            for tag in tags:
+                tagrelation = Tag_relation.query.filter_by(tag_id = tag.id).first()
+                relation_box.append(tagrelation.article_id)
+            
+            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).all()
+            # 辞書を作成　　　辞書内に配列を作成
+            tags = {}
+            names = {}
+            # 投稿idを取得
+            for blogarticle in blogarticles:
+                #blogの投稿主を取得
+                user = User.query.filter_by(id=blogarticle.user_id).all()
+                #ユーザーネームをnames辞書に記録
+                names[blogarticle.id] = user[0].username
+                #blogarticleのidと一致するものをTag_relationから取得
+                relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
+                #配列を作成
+                box = []
+                for relation_to_tag in relation_to_tags:
+                    #Tagからnameを取得
+                    tag_dict = {}
+                    tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
+                    tag_dict["name"] = tag.name
+                    tag_dict["type"] = tag.type_id
+                    box.append(tag_dict)
+                tags[blogarticle.id] = box
+            if blogarticles is None:
+                flash('この検索内容では記事がありません')
+
+            return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names)
+
     else:
         return redirect('/login')
+
+ 
+
+
+#タイプによる登録
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    if request.method == "POST":
+        username = request.form.get('username')
+        password = request.form.get('password')
+        # Userのインスタンスを作成
+        if User.query.filter_by(username=username).first() is None:
+            if username == '' or password == '':
+                flash('ユーザー名とパスワードを入力してください')
+                return render_template('signup.html')
+            else:
+                user = User(username=username, password=generate_password_hash(password, method='sha256'))
+                db.session.add(user)
+                db.session.commit()
+                return redirect('/login')
+        else:
+            flash('そのユーザー名はすでに登録されています')
+            return render_template('sesarch.html')
+    else:
+        return render_template('index.html')
+
+
 
 
 #ユーザー登録
