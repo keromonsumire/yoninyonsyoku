@@ -224,16 +224,25 @@ def create_tag():
 
 @app.route('/update/<int:id>',methods=['GET', 'POST'])
 def update(id):
-    # 引数idに一致するデータを取得する
+    # 引数idに一致するデータを取得する➡blogarticleのデータを取得
     blogarticle = BlogArticle.query.get(id)
     content = Content.query.filter_by(blog_id=id).all()
+    headlines = Content.query.filter_by(content_type="headline").filter_by(blog_id=id).all()
+    bodys = Content.query.filter_by(content_type="body").filter_by(blog_id=id).all()
+    length = len(headlines)
+    
+
+
     if request.method == "GET":
-        return render_template('update.html', blogarticle=blogarticle, content=content)
+        return render_template('update.html', blogarticle=blogarticle, content=content,headlines=headlines,bodys=bodys,length=length)
     else:
         # 上でインスタンス化したblogarticleのプロパティを更新する
         blogarticle.title = request.form.get('title')
-        content.content_type = request.form.get('content_type')
-        content.text = request.form.get('text')
+        for number in range(length):
+            headlines[number].text = request.form.get(f'headline{number}')
+            bodys[number].text = request.form.get(f'body{number}')
+
+        
         # 更新する場合は、add()は不要でcommit()だけでよい
         db.session.commit()
         return redirect('/user/show')
