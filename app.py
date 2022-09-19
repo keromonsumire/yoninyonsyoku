@@ -93,8 +93,7 @@ def blog():
                     tag_dict["type"] = tag.type_id
                     box.append(tag_dict)
                 tags[blogarticle.id] = box
-
-
+                
             return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
                     #タイプで検索をする # checkboxからtypeを取得
         elif request.method == "POST":
