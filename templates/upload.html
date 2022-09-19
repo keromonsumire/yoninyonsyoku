@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>サムネイルの設定</title>
-</head>
-<body>
-    <h1>サムネイルに使用するファイルをアップロードしてくだしあ</h1>
-    <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image">
-        <input type="submit" value="アップロード">
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+<div class="contents2">
+    <div class="content space">
+        <h1 class="create-h1">サムネイル</h1>
+        <div class="create-contents">
+            <div class="create-contents2">
+                <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
+                    <div class="jpeg">
+                        <input type="file" name="image">
+                        <p>※jpeg/png</p>
+                    </div>
+                    <input type="submit" class="button" value="アップロード">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
