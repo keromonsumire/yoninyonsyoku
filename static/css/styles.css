@@ -135,6 +135,10 @@ header{
   opacity: 0.8;
 }
 
+#header-logo{
+  text-decoration: none;
+}
+
 .header-img{
   width:20px;
   height:20px;
