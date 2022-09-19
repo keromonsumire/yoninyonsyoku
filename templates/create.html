@@ -1,56 +1,62 @@
 
 {% extends 'base.html' %}
 {% block content %}
-<h1>新規登録画面</h1>
-<form method="POST">
-    <label for="title">タイトル</label>
-    <input type="text" name="title">
-
-    <div class="element1">
-        <label for="headline1">見出し1</label>
-        <input type="text" name="headline1">
-        <label for="body1">内容1</label>
-        <textarea rows="5" type="text" name="body1"></textarea>
-        <button type="button" class="create-button1">追加</button>
+<div class="contents2">
+    <div class="content space">
+        <h1 class="create-h1">新規作成画面</h1>
+        <div class="create-contents">
+            <div class="create-contents2">
+                <form method="POST">
+                    <input class="create-title" placeholder="タイトル" type="text" name="title">
+                    
+                    <div class="element1">
+                        <input class="create-content" placeholder="見出し" type="text" name="headline1">
+                        <textarea rows="13"  placeholder="内容" type="text" name="body1"></textarea>
+                        <div class="create-buttons">
+                            <button type="button" class="create-button1">追加</button>
+                        </div>
+                    </div>
+                
+                    <div class="element2">
+                        <input class="create-content" placeholder="見出し" type="text" name="headline2">
+                        <textarea rows="13"  placeholder="内容" type="text" name="body2"></textarea>
+                        <div class="create-buttons">
+                        <button type="button" class="create-button2">追加</button>
+                        <button type="button" class="create-button5">削除</button>
+                        </div>
+                
+                    </div>
+                
+                    <div class="element3">
+                        <input class="create-content" placeholder="見出し" type="text" name="headline3">
+                        <textarea rows="13"  placeholder="内容" type="text" name="body3"></textarea>
+                        <div class="create-buttons">
+                        <button type="button" class="create-button3">追加</button>
+                        <button type="button" class="create-button6">削除</button>
+                        </div>
+                    </div>
+                
+                    <div class="element4">
+                        <input class="create-content" placeholder="見出し" type="text" name="headline4">
+                        <textarea rows="13"  placeholder="内容" type="text" name="body4"></textarea>
+                        <div class="create-buttons">
+                        <button type="button" class="create-button4">追加</button>
+                        <button type="button" class="create-button7">削除</button>
+                        </div>
+                    </div>
+                
+                    <div class="element5">
+                        <input class="create-content" placeholder="見出し" type="text" name="headline5">
+                        <textarea rows="13"  placeholder="内容" type="text" name="body5"></textarea>
+                        <div class="create-buttons">
+                        <button type="button" class="create-button8">削除</button>
+                        </div>
+                    </div>
+                    <input type="submit" class="button create-button" value="次へ">
+                </form>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="element2">
-        <label for="headline2">見出し2</label>
-        <input type="text" name="headline2">
-        <label for="body2">内容2</label>
-        <textarea rows="5" type="text" name="body2"></textarea>
-        <button type="button" class="create-button2">追加</button>
-        <button type="button" class="create-button5">削除</button>
-
-    </div>
-
-    <div class="element3">
-        <label for="headline3">見出し3</label>
-        <input type="text" name="headline3">
-        <label for="body3">内容3</label>
-        <textarea rows="5" type="text" name="body3"></textarea>
-        <button type="button" class="create-button3">追加</button>
-        <button type="button" class="create-button6">削除</button>
-    </div>
-
-    <div class="element4">
-        <label for="headline2">見出し4</label>
-        <input type="text" name="headline4">
-        <label for="body4">内容4</label>
-        <textarea rows="5" type="text" name="body4"></textarea>
-        <button type="button" class="create-button4">追加</button>
-        <button type="button" class="create-button7">削除</button>
-    </div>
-
-    <div class="element5">
-        <label for="headline2">見出し5</label>
-        <input type="text" name="headline5">
-        <label for="body5">内容5</label>
-        <textarea rows="5" type="text" name="body5"></textarea>
-        <button type="button" class="create-button8">削除</button>
-    </div>
-
-    <input type="submit" value="投稿">
-    
-</form>
 {% endblock %}

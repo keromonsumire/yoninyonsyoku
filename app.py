@@ -31,6 +31,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(25))
     blogarticles = db.relationship('BlogArticle', backref='users', lazy=True)
 
+
 class BlogArticle(db.Model):
     __tablename__ = 'BlogArticle'
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +41,7 @@ class BlogArticle(db.Model):
     contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
     image = db.Column(db.String(100))
+
     
 class Tag_relation(db.Model):
     __tablename__ = 'Tagrelation' 
@@ -91,6 +93,7 @@ def blog():
                     tag_dict["type"] = tag.type_id
                     box.append(tag_dict)
                 tags[blogarticle.id] = box
+
 
             return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
                     #タイプで検索をする # checkboxからtypeを取得
@@ -159,6 +162,7 @@ def blog():
                 flash('この検索内容では記事がありません')
 
             return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names)
+
     else:
         return redirect('/login')
 
@@ -253,31 +257,43 @@ def create():
         for num in range(5): 
             body.append(request.form.get(f'body{num+1}'))
             headline.append(request.form.get(f'headline{num+1}'))
-        
-        # BlogArticleのインスタンスを作成
-        blogarticle = BlogArticle(title=title, user_id=current_user.id, )
-        db.session.add(blogarticle)
-        db.session.commit()
+        if title == "":
+            flash('タイトルを入力してください')
+            return render_template("create.html")
+        elif len(title) > 50:
+            flash('タイトルは50文字以下にしてください')
+            return render_template("create.html")
+        elif headline[0] == "":
+            flash('見出しを入力してください')
+            return render_template("create.html")
+        elif body[0] == "":
+            flash('内容を入力してください')
+            return render_template("create.html")
+        else:
+            # BlogArticleのインスタンスを作成
+            blogarticle = BlogArticle(title=title, user_id=current_user.id, )
+            db.session.add(blogarticle)
+            db.session.commit()
 
-        #最新の記事(今作成した記事)を取得
-        blog = BlogArticle.query.order_by(BlogArticle.id.desc()).limit(1).all() 
-        blog_id = blog[0].id 
-        count = 0
-        #formの数だけ繰り返す
-        for num in range(5):
-            #formが入力されていなければデータベースに入れない
-            if headline[num] != "":
-                new_headline = Content(blog_id=blog_id, content_type="headline", text=headline[num],seq=count)
-                db.session.add(new_headline)
-                count += 1
-            if body[num] != "":
-                new_body = Content(blog_id=blog_id, content_type="body", text=body[num], seq=count)
-                db.session.add(new_body)
-                count += 1
-        db.session.commit()
+            #最新の記事(今作成した記事)を取得
+            blog = BlogArticle.query.order_by(BlogArticle.id.desc()).limit(1).all() 
+            blog_id = blog[0].id 
+            count = 0
+            #formの数だけ繰り返す
+            for num in range(5):
+                #formが入力されていなければデータベースに入れない
+                if headline[num] != "":
+                    new_headline = Content(blog_id=blog_id, content_type="headline", text=headline[num],seq=count)
+                    db.session.add(new_headline)
+                    count += 1
+                if body[num] != "":
+                    new_body = Content(blog_id=blog_id, content_type="body", text=body[num], seq=count)
+                    db.session.add(new_body)
+                    count += 1
+            db.session.commit()
 
-        session["blog_id"] = blog[0].id
-        return redirect('/create/tag')
+            session["blog_id"] = blog[0].id
+            return redirect('/create/tag')
     else:
         return render_template('create.html')
 
@@ -285,7 +301,12 @@ def create():
 def create_tag():
     blogarticle = BlogArticle.query.get(session["blog_id"])
     if request.method == "GET":
-        return render_template('create_tag.html')
+        tag1 = Tag.query.filter_by(type_id=1).all()
+        tag2 = Tag.query.filter_by(type_id=2).all()
+        tag3 = Tag.query.filter_by(type_id=3).all()
+        tag4 = Tag.query.filter_by(type_id=4).all()
+        tag5 = Tag.query.filter_by(type_id=5).all()
+        return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
         tag = []
         for number in range(5): 
@@ -310,6 +331,11 @@ def create_tag():
                     print(tagrelation)
                     tag_existance.type_id = number + 1
                     db.session.add(tagrelation)
+        existing_tag_ids = request.form.getlist("existing")
+        print(existing_tag_ids)
+        for tag_id in existing_tag_ids:
+            tagrelation = Tag_relation(tag_id=tag_id, article_id=session["blog_id"])
+            db.session.add(tagrelation)
         db.session.commit()
         return redirect('/upload')
 
