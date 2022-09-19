@@ -135,6 +135,10 @@ header{
   opacity: 0.8;
 }
 
+#header-logo{
+  text-decoration: none;
+}
+
 .header-img{
   width:20px;
   height:20px;
@@ -189,7 +193,7 @@ header{
   padding-bottom:10px;
 }
 
-/* create.htmlについて */
+/* create.html,upload.htmlについて */
 .element1
 {
   padding-top:30px;
@@ -264,6 +268,17 @@ header{
   margin-right:55px;
 }
 
+/* upload.htmlについて */
+.jpeg
+{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.jpeg p
+{
+  margin-top:5px;
+}
 
 /* 入力フォームを縦に伸ばさない */
 textarea{

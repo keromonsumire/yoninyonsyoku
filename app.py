@@ -64,6 +64,17 @@ class Content(db.Model):
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
 
+@app.route('/welcome', methods=['GET'])
+def welcome():
+    return render_template('welcome.html')
+
+@app.route('/information/search', methods=['GET'])
+def info_search():
+    return render_template('information_search.html')
+
+@app.route('/information/write',methods=['GET'])
+def info_write():
+    return render_template('information_write.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def blog():
@@ -74,28 +85,7 @@ def blog():
             blogarticles = BlogArticle.query.all()
             # 辞書を作成　　　辞書内に配列を作成
             tags = {}
-            names = {}
-            # 投稿idを取得
-            for blogarticle in blogarticles:
-                #blogの投稿主を取得
-                user = User.query.filter_by(id=blogarticle.user_id).all()
-                #ユーザーネームをnames辞書に記録
-                names[blogarticle.id] = user[0].username
-                #blogarticleのidと一致するものをTag_relationから取得
-                relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
-                #配列を作成
-                box = []
-                for relation_to_tag in relation_to_tags:
-                    #Tagからnameを取得
-                    tag_dict = {}
-                    tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
-                    tag_dict["name"] = tag.name
-                    tag_dict["type"] = tag.type_id
-                    box.append(tag_dict)
-                tags[blogarticle.id] = box
-
-
-            return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+            return render_template('index.html', blogarticles=[], tags = [], names = [])
                     #タイプで検索をする # checkboxからtypeを取得
         elif request.method == "POST":
             #AND検索を押したら　r = "AND検索"
@@ -405,14 +395,25 @@ def create_tag():
 
 @app.route('/update/<int:id>',methods=['GET', 'POST'])
 def update(id):
-    # 引数idに一致するデータを取得する
+    # 引数idに一致するデータを取得する➡blogarticleのデータを取得
     blogarticle = BlogArticle.query.get(id)
+    content = Content.query.filter_by(blog_id=id).all()
+    headlines = Content.query.filter_by(content_type="headline").filter_by(blog_id=id).all()
+    bodys = Content.query.filter_by(content_type="body").filter_by(blog_id=id).all()
+    length = len(headlines)
+    
+
+
     if request.method == "GET":
-        return render_template('update.html', blogarticle=blogarticle)
+        return render_template('update.html', blogarticle=blogarticle, content=content,headlines=headlines,bodys=bodys,length=length)
     else:
         # 上でインスタンス化したblogarticleのプロパティを更新する
         blogarticle.title = request.form.get('title')
-        blogarticle.body = request.form.get('body')
+        for number in range(length):
+            headlines[number].text = request.form.get(f'headline{number}')
+            bodys[number].text = request.form.get(f'body{number}')
+
+        
         # 更新する場合は、add()は不要でcommit()だけでよい
         db.session.commit()
         return redirect('/user/show')
