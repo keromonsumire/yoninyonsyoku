@@ -8,10 +8,9 @@
                 <li><img src="../static/photo/sample1.jpg" alt="サンプル画像" /></li>
                 <li><img src="../static/photo/sample2.jpg" alt="サンプル画像" /></li>
                 <li><img src="../static/photo/sample3.jpg" alt="サンプル画像" /></li>
-            </ul>
-            
+            </ul>            
         </div>
-        <form method="POST">
+        <form method="POST" name="search" >
         <label><input type="checkbox" name="check" value='1'>自分が成長する = 何かを成し遂げる</label>
         <p></p>
         <label><input type="checkbox" name="check" value='2'>新しいものに出会って感動する</label>
@@ -22,8 +21,10 @@
         <p></p>
         <label><input type="checkbox" name="check" value='5'>実益を兼ねる</label>
         <p></p>
-        <input type="submit" value="検索">
+        <input type="submit" name="orsearch" value="OR検索" >
         <p></p>
+        <input type="submit" name="andsearch" value="AND検索" >
+        
         </form>
         {% for blogarticle in blogarticles %}
         <article>
