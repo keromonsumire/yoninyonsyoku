@@ -64,6 +64,17 @@ class Content(db.Model):
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
 
+@app.route('/welcome', methods=['GET'])
+def welcome():
+    return render_template('welcome.html')
+
+@app.route('/information/search', methods=['GET'])
+def info_search():
+    return render_template('information_search.html')
+
+@app.route('/information/write',methods=['GET'])
+def info_write():
+    return render_template('information_write.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def blog():
@@ -93,8 +104,8 @@ def blog():
                     tag_dict["type"] = tag.type_id
                     box.append(tag_dict)
                 tags[blogarticle.id] = box
-
-
+            session["a"] = None
+            print(session["a"])
             return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
                     #タイプで検索をする # checkboxからtypeを取得
         elif request.method == "POST":
