@@ -2,6 +2,11 @@
 {% block content %}
 <h1>新規登録画面</h1>
 <form method="POST">
+<p>既存のタグから選択</p>
+{% for t in tag1 %}
+<label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+{% endfor %}
+<p>新しくタグを追加</p>
 <label for="tag">タグ1</label>
 <input type="text" name="tag1-1">
 
@@ -18,6 +23,12 @@
 <input type="text" name="tag1-5">
 
 <p></p>
+
+<p>既存のタグから選択</p>
+{% for t in tag2 %}
+<label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+{% endfor %}
+<p>新しくタグを追加</p>
 
 <label for="tag">タグ1</label>
 <input type="text" name="tag2-1">
@@ -36,6 +47,11 @@
 
 <p></p>
 
+<p>既存のタグから選択</p>
+{% for t in tag3 %}
+<label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+{% endfor %}
+<p>新しくタグを追加</p>
 <label for="tag">タグ1</label>
 <input type="text" name="tag3-1">
 
@@ -53,6 +69,11 @@
 
 <p></p>
 
+<p>既存のタグから選択</p>
+{% for t in tag4 %}
+<label><input type="checkbox" name="existing" value='{{t.id}}'></label>
+{% endfor %}
+<p>新しくタグを追加</p>
 <label for="tag">タグ1</label>
 <input type="text" name="tag4-1">
 
@@ -70,6 +91,11 @@
 
 <p></p>
 
+<p>既存のタグから選択</p>
+{% for t in tag5 %}
+<label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+{% endfor %}
+<p>新しくタグを追加</p>
 <label for="tag">タグ1</label>
 <input type="text" name="tag5-1">
 
