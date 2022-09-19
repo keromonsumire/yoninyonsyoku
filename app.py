@@ -157,8 +157,9 @@ def blog():
                     tag_dict["name"] = tag.name
                     tag_dict["type"] = tag.type_id
                     box.append(tag_dict)
-                tags[blogarticle.id] = box
-            if blogarticles is None:
+                tags[blogarticle.id] =  box
+            print(blogarticles) 
+            if blogarticles == []:
                 flash('この検索内容では記事がありません')
 
             return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names)
