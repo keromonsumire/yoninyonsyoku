@@ -3,54 +3,42 @@
 <div class="contents2">
     <div class="content">
         <div class="search">
-            
-            <div  class="search-show">
-
-                <form method="GET" name="search" >
-                    
-                    <!-- <label><input type="checkbox" name="check" value='1'>自分が成長する = 何かを成し遂げる</label>
-                    <p></p>
-                    <label><input type="checkbox" name="check" value='2'>新しいものに出会って感動する</label>
-                    <p></p>
-                    <label><input type="checkbox" name="check" value='3'>人（動物）と交流する</label>
-                    <p></p>
-                    <label><input type="checkbox" name="check" value='4'>何かをつくりあげる　自分を表現する</label>
-                    <p></p>
-                    <label><input type="checkbox" name="check" value='5'>実益を兼ねる</label>
-                    <p></p>
-                    <input type="submit" name="orsearch" value="OR検索" >
-                    <p></p>
-                    <input type="submit" name="andsearch" value="AND検索" > -->
-                    <input type="submit" value="条件を選びなおす" >
-                    </form>
-                    {% if "1" in types%}
-                    <p>自分が成長する = 何かを成し遂げる  を選択しました</p>
-                    {% endif %}
-                    {% if "2" in types%}
-                    <p>新しいものに出会って感動する  を選択しました</p>
-                    {% endif %}
-                    {% if "3" in types%}
-                    <p>人（動物）と交流する  を選択しました</p>
-                    {% endif %}
-                    {% if "4" in types%}
-                    <p>何かをつくりあげる　自分を表現する  を選択しました</p>
-                    {% endif %}
-                    {% if "5" in types%}
-                    <p>実益を兼ねる  を選択しました</p>
-                    {% endif %}
-                {% for blogarticle in blogarticles %}
-        <article>
-            <img src="../static/image/{{ blogarticle.image }}">
-            <a href="/article/{{ blogarticle.id }}"><h1 class="title">{{ blogarticle.title }}</h1></a>
-            <p>投稿主:{{ names[blogarticle.id] }}</p>
-            {% for tag in tags[blogarticle.id] %}
-            <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
-            {% endfor %}
-
-            <p>作成日時：{{ blogarticle.created_at }}</p>
-        </article>
-        {% endfor %}
-                
+            <div class="search-show">
+                {% if "1" in types%}
+                <p class="search-text"><span class="tag1">成長することに喜びを感じる</span> を選択しました</p>
+                {% endif %}
+                {% if "2" in types%}
+                <p class="search-text"><span class="tag2">新しいものに出会って感動したい</span> を選択しました</p>
+                {% endif %}
+                {% if "3" in types%}
+                <p class="search-text"><span class="tag3">人や動物と交流するのが好き</span> を選択しました</p>
+                {% endif %}
+                {% if "4" in types%}
+                <p class="search-text"><span class="tag4">創作や自己表現が好き</span> を選択しました</p>
+                {% endif %}
+                {% if "5" in types%}
+                <p class="search-text"><span class="tag5">趣味を通じて何かを得たい</span> を選択しました</p>
+                {% endif %}
+                <article>
+                    {% for blogarticle in blogarticles %}
+                    <div class="blog-content">
+                        <a class="search-link" href="/article/{{ blogarticle.id }}">
+                            <div class="search-photo">
+                                <img src="../static/image/{{ blogarticle.image }}">
+                            </div>
+                            <h1 class="title">{{ blogarticle.title }}</h1>
+                            <p>投稿主:{{ names[blogarticle.id] }}</p>
+                            {% for tag in tags[blogarticle.id] %}
+                            <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
+                            {% endfor %}
+                            <p>作成日時：{{ blogarticle.created_at }}</p>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </article>
+                <form method="GET" name="search">
+                    <input type="submit" class="button search-button" value="条件を選びなおす">
+                </form>
             </div>
         </div>
     </div>
