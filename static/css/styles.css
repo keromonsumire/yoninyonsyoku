@@ -466,3 +466,14 @@ p {
 .center{
   text-align:center;
 }
+
+.pd-50{
+  padding-top:50px;
+  padding-bottom:20px;
+}
+
+/* ブロック要素を中央揃え */
+.center-block{
+  margin-right: auto;
+  margin-left: auto;
+}
