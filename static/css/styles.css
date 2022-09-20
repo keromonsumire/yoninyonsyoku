@@ -116,6 +116,11 @@ button{
 }
 
 /* index.htmlについて */
+.index-h1
+{
+  text-align: center;
+}
+
 .yellow
 {
   background-color: #606060;
@@ -173,12 +178,12 @@ header{
   padding-top:50px;
 }
 
-.slider img
+/* .slider img
 {
   width:100%;
   height:300px;
   object-fit: cover;
-}
+} */
 
 .headline{
   text-decoration: underline;
