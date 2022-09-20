@@ -397,7 +397,7 @@ def update(id):
         return redirect('/user/show')
 
 
-@app.route('/add/tag/<int:id>', methods=['GET','POST'])
+@app.route('/add_tag/<int:id>', methods=['GET','POST'])
 def add_tag(id):
     blogarticle = BlogArticle.query.get(id)
     if request.method == "GET":
@@ -445,7 +445,7 @@ def add_tag(id):
         return redirect('/user/show')
 
 
-@app.route('/delete/tag/<int:id>', methods=['GET','POST'])
+@app.route('/delete_tag/<int:id>', methods=['GET','POST'])
 def delete_tag(id):
     blogarticle = BlogArticle.query.get(id)
     if request.method == "GET":
