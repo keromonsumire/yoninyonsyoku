@@ -356,6 +356,17 @@ def create_tag():
         for number in range(5): 
             for num in range(5):
                 tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+        existing_tag_ids = request.form.getlist("existing")
+        tag_nothing = tag + existing_tag_ids
+        if all([x == '' for x in tag_nothing]):
+            flash('必ず一つ以上のタグを作成してください')
+            tag1 = Tag.query.filter_by(type_id=1).all()
+            tag2 = Tag.query.filter_by(type_id=2).all()
+            tag3 = Tag.query.filter_by(type_id=3).all()
+            tag4 = Tag.query.filter_by(type_id=4).all()
+            tag5 = Tag.query.filter_by(type_id=5).all()
+            return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
+        
         for num in range(25):
             #tagが入力されていなければデータベースに入れない
             if tag[num] != "":
@@ -374,7 +385,9 @@ def create_tag():
                     tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=session["blog_id"])
                     tag_existance.type_id = number + 1
                     db.session.add(tagrelation)
-        existing_tag_ids = request.form.getlist("existing")
+        
+
+
         for tag_id in existing_tag_ids:
             tagrelation = Tag_relation(tag_id=tag_id, article_id=session["blog_id"])
             db.session.add(tagrelation)
