@@ -544,9 +544,6 @@ def upload():
         db.session.commit()
         return redirect('/')
 
-@app.route('/uploaded_file/<string:filename>')
-def uploaded_file(filename):
-    return render_template('uploaded_file.html', filename=filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
