@@ -298,10 +298,15 @@ header{
   margin-top:20px;
 }
 
-.instance1
+.description
 {
   display:none;
   margin-top:5px;
+}
+
+.pad20{
+padding-top:20px;
+padding-bottom:20px;
 }
 
 .create-tag
