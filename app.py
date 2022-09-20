@@ -92,6 +92,7 @@ def blog():
             #AND検索を押したら　r = "AND検索"
             r = request.form.get("andsearch")
             types = request.form.getlist("check")
+            
             ##もしなにも選択していない場合  ##までつづく
             if types == []:
                             # DBに登録されたデータをすべて取得する
@@ -118,7 +119,7 @@ def blog():
                         box.append(tag_dict)
                     tags[blogarticle.id] = box
                 flash('チェック入れて検索してください')
-                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names, checkboxs = checkboxs)
+                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
                 ##
             
             #OR検索かAND検索かの識別
@@ -356,6 +357,17 @@ def create_tag():
         for number in range(5): 
             for num in range(5):
                 tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+        existing_tag_ids = request.form.getlist("existing")
+        tag_nothing = tag + existing_tag_ids
+        if all([x == '' for x in tag_nothing]):
+            flash('必ず一つ以上のタグを作成してください')
+            tag1 = Tag.query.filter_by(type_id=1).all()
+            tag2 = Tag.query.filter_by(type_id=2).all()
+            tag3 = Tag.query.filter_by(type_id=3).all()
+            tag4 = Tag.query.filter_by(type_id=4).all()
+            tag5 = Tag.query.filter_by(type_id=5).all()
+            return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
+        
         for num in range(25):
             #tagが入力されていなければデータベースに入れない
             if tag[num] != "":
@@ -374,7 +386,9 @@ def create_tag():
                     tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=session["blog_id"])
                     tag_existance.type_id = number + 1
                     db.session.add(tagrelation)
-        existing_tag_ids = request.form.getlist("existing")
+        
+
+
         for tag_id in existing_tag_ids:
             tagrelation = Tag_relation(tag_id=tag_id, article_id=session["blog_id"])
             db.session.add(tagrelation)
@@ -404,6 +418,80 @@ def update(id):
 
         
         # 更新する場合は、add()は不要でcommit()だけでよい
+        db.session.commit()
+        return redirect('/user/show')
+
+
+@app.route('/add/tag/<int:id>', methods=['GET','POST'])
+def add_tag(id):
+    blogarticle = BlogArticle.query.get(id)
+    if request.method == "GET":
+        relations = Tag_relation.query.filter_by(article_id=id).all()
+        tag_ids =[]
+        for relation in relations:
+            tag_ids.append(relation.tag_id)
+        
+        tag1 = Tag.query.filter_by(type_id=1).filter(~Tag.id.in_(tag_ids)).all()
+        tag2 = Tag.query.filter_by(type_id=2).filter(~Tag.id.in_(tag_ids)).all()
+        tag3 = Tag.query.filter_by(type_id=3).filter(~Tag.id.in_(tag_ids)).all()
+        tag4 = Tag.query.filter_by(type_id=4).filter(~Tag.id.in_(tag_ids)).all()
+        tag5 = Tag.query.filter_by(type_id=5).filter(~Tag.id.in_(tag_ids)).all()
+        return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
+    else:
+        tag = []
+        for number in range(5): 
+            for num in range(5):
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+        for num in range(25):
+            #tagが入力されていなければデータベースに入れない
+            if tag[num] != "":
+                tag_existance = Tag.query.filter_by(name = tag[num]).first()
+                # tag_existanceがNoneであれば、新しくTagテーブルに追加
+                if tag_existance is None:
+                    new_tag = Tag(name = tag[num])
+                    db.session.add(new_tag)
+        db.session.commit()
+        for number in range(5):
+            for num in range(5):
+                #Tagテーブルの中に存在するか調べる
+                tag_existance = Tag.query.filter_by(name = tag[number * 5 + num]).first()
+                #もし存在すれば、Tag_relationに追加
+                if  tag_existance is not None:
+                    tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=id)
+                    print(tagrelation)
+                    tag_existance.type_id = number + 1
+                    db.session.add(tagrelation)
+        existing_tag_ids = request.form.getlist("existing")
+        print(existing_tag_ids)
+        for tag_id in existing_tag_ids:
+            tagrelation = Tag_relation(tag_id=tag_id, article_id=id)
+            db.session.add(tagrelation)
+        db.session.commit()
+        return redirect('/user/show')
+
+
+@app.route('/delete/tag/<int:id>', methods=['GET','POST'])
+def delete_tag(id):
+    blogarticle = BlogArticle.query.get(id)
+    if request.method == "GET":
+        tag_ids=[]
+        tag_relations = Tag_relation.query.filter_by(article_id=id).all()
+        for tag_relation in tag_relations:
+            tag_ids.append(tag_relation.tag_id)
+        tag_names=[]
+        for tag_id in tag_ids:
+            tag = Tag.query.filter_by(id=tag_id).first()
+            tag_names.append(tag.name)
+        return render_template('delete_tag.html', tag_names = tag_names)
+    else:
+        tag_names = request.form.getlist("tag")
+        tag_ids=[]
+        for tag_name in tag_names:
+            tag = Tag.query.filter_by(name=tag_name).first()
+            tag_ids.append(tag.id)
+        for tag_id in tag_ids:
+            tag_relation = Tag_relation.query.filter_by(tag_id=tag_id).filter_by(article_id=id).first()
+            db.session.delete(tag_relation)
         db.session.commit()
         return redirect('/user/show')
 
