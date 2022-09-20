@@ -92,6 +92,7 @@ def blog():
             #AND検索を押したら　r = "AND検索"
             r = request.form.get("andsearch")
             types = request.form.getlist("check")
+            
             ##もしなにも選択していない場合  ##までつづく
             if types == []:
                             # DBに登録されたデータをすべて取得する
@@ -118,7 +119,7 @@ def blog():
                         box.append(tag_dict)
                     tags[blogarticle.id] = box
                 flash('チェック入れて検索してください')
-                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names, checkboxs = checkboxs)
+                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
                 ##
             
             #OR検索かAND検索かの識別
