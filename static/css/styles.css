@@ -194,6 +194,7 @@ header{
 .space
 {
   padding-top:15px;
+  padding-bottom: 30px;
 }
 
 .create-contents
@@ -374,6 +375,7 @@ article
 .blog-content
 {
   background-color:lightgray;
+  margin-top:15px;
   margin-bottom:20px;
   width:30%;
 }
@@ -396,6 +398,22 @@ article
   text-decoration: none;
 }
 
+.search-show
+{
+  text-align: center;
+  padding-bottom:15px;
+}
+
+.search-text
+{
+  padding-top:15px;
+  font-size:20px;
+}
+
+.search-button
+{
+  margin:0 auto;
+}
 
 /* 入力フォームを縦に伸ばさない */
 textarea{
@@ -417,27 +435,27 @@ p {
 
 .tag1{
   background-color:lightblue;
-  color:#333;
+  color:white;
 }
 
 .tag2{
   background-color:lightsalmon;
-  color:#333;
+  color:white;
 }
 
 .tag3{
   background-color:lightcoral;
-  color:#333;
+  color:white;
 }
 
 .tag4{
   background-color:lightgreen;
-  color:#333;
+  color:white;
 }
 
 .tag5{
-  background-color:lightyellow;
-  color:#333;
+  background-color:plum;
+  color:white;
 }
 
 .center{
