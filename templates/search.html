@@ -5,6 +5,29 @@
         <div class="search">
             
             <div  class="search-show">
+
+                <form method="POST" name="search" >
+                    {% if "1" in chekboxs %}
+                    <label><input type="checkbox"  name="check" value="1">自分が成長する = 何かを成し遂げる</label>
+                    {% else %}
+                    <label><input type="checkbox"  name="check" value="1">自分が成長する = 何かを成し遂げる</label>
+                    {% endif%}
+
+                    <label><input type="checkbox" name="check" value='1'>自分が成長する = 何かを成し遂げる</label>
+                    <p></p>
+                    <label><input type="checkbox" name="check" value='2'>新しいものに出会って感動する</label>
+                    <p></p>
+                    <label><input type="checkbox" name="check" value='3'>人（動物）と交流する</label>
+                    <p></p>
+                    <label><input type="checkbox" name="check" value='4'>何かをつくりあげる　自分を表現する</label>
+                    <p></p>
+                    <label><input type="checkbox" name="check" value='5'>実益を兼ねる</label>
+                    <p></p>
+                    <input type="submit" name="orsearch" value="OR検索" >
+                    <p></p>
+                    <input type="submit" name="andsearch" value="AND検索" >
+                    
+                    </form>
                 {% for blogarticle in blogarticles %}
         <article>
             <img src="../static/image/{{ blogarticle.image }}">

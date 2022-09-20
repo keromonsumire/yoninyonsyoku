@@ -46,4 +46,63 @@ $(function() {
     $(".element5").hide();
   });
 
+  // create_tag.htmlについて
+  $(".tag-button1").click(function() {
+    $(".bluetags1").toggle();
+  });
+  $(".tag-button2").click(function() {
+    $(".bluetags2").toggle();
+  });
+  $(".tag-button3").click(function() {
+    $(".orangetags1").toggle();
+  });
+  $(".tag-button4").click(function() {
+    $(".orangetags2").toggle();
+  });
+  $(".tag-button5").click(function() {
+    $(".redtags1").toggle();
+  });
+  $(".tag-button6").click(function() {
+    $(".redtags2").toggle();
+  });
+  $(".tag-button7").click(function() {
+    $(".greentags1").toggle();
+  });
+  $(".tag-button8").click(function() {
+    $(".greentags2").toggle();
+  });
+  $(".tag-button9").click(function() {
+    $(".yellowtags1").toggle();
+  });
+  $(".tag-button10").click(function() {
+    $(".yellowtags2").toggle();
+  });
+  // $(".tag-button2").click(function() {
+  //   $("#graytag1").show();
+  // });
+  // $(".tag-button2").click(function() {
+  //   if ($("#graytag1").show())
+  //     {
+  //       $("#graytag2").show();
+  //     }
+  // });
+  // $(".tag-button2").click(function() {
+  //   if ($("#graytag2").show())
+  //     {
+  //       $("#graytag3").show();
+  //     }
+  // });
+  // $(".tag-button2").click(function() {
+  //   if ($("#graytag3").show())
+  //     {
+  //       $("#graytag4").show();
+  //     }
+  // });
+  // $(".tag-button2").click(function() {
+  //   if ($("#graytag4").show())
+  //     {
+  //       $("#graytag5").show();
+  //     }
+  // });
+  
 });

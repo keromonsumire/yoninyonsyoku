@@ -1,116 +1,111 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>新規登録画面</h1>
-<form method="POST">
-<p>既存のタグから選択</p>
-{% for t in tag1 %}
-<label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
-{% endfor %}
-<p>新しくタグを追加</p>
-<label for="tag">タグ1</label>
-<input type="text" name="tag1-1">
+<div class="contents2">
+  <div class="content space">
+    <h1 class="tag-h1">タグを追加する</h1>
+    <div class="tags">
+      <form method="POST">
+        <div class="bluetags">
+          <p>成長系</p>
+          <div class="tags">
+            <button type="button" class="tag-button1">既存のタグから選択</button>
+            <button type="button" class="tag-button2">新しくタグを追加</button>
+            <div class="bluetags1">
+              {% for t in tag1 %}
+              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              {% endfor %}
+            </div>
+            <div class="bluetags2">
+              <input type="text" placeholder="記入してください" class="tag1 create-tag button" name="tag1-1">
+              <input type="text" class="tag1 create-tag button" name="tag1-2">
+              <input type="text" class="tag1 create-tag button" name="tag1-3">
+              <input type="text" class="tag1 create-tag button" name="tag1-4">
+              <input type="text" class="tag1 create-tag button" name="tag1-5">
+            </div>
+          </div>
+        </div>
+        <div class="orangetags">
+          <p>感動系</p>
+          <div class="tags">
+            <button type="button" class="tag-button3">既存のタグから選択</button>
+            <button type="button" class="tag-button4">新しくタグを追加</button>
+            <div class="orangetags1">
+              {% for t in tag2 %}
+              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              {% endfor %}
+            </div>
+            <div class="orangetags2">
+              <input type="text" placeholder="記入してください" class="tag2 create-tag button" name="tag2-1">
+              <input type="text" class="tag2 create-tag button" name="tag2-2">
+              <input type="text" class="tag2 create-tag button" name="tag2-3">
+              <input type="text" class="tag2 create-tag button" name="tag2-4">
+              <input type="text" class="tag2 create-tag button" name="tag2-5">
+            </div>
+          </div>
+        </div>
+        <div class="redtags">
+          <p>交流系</p>
+          <div class="tags">
+            <button type="button" class="tag-button5">既存のタグから選択</button>
+            <button type="button" class="tag-button6">新しくタグを追加</button>
+            <div class="redtags1">
+              {% for t in tag3 %}
+              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              {% endfor %}
+            </div>
+            <div class="redtags2">
+              <input type="text" placeholder="記入してください" class="tag3 create-tag button" name="tag3-1">
+              <input type="text" class="tag3 create-tag button" name="tag3-2">
+              <input type="text" class="tag3 create-tag button" name="tag3-3">
+              <input type="text" class="tag3 create-tag button" name="tag3-4">
+              <input type="text" class="tag3 create-tag button" name="tag3-5">
+            </div>
+          </div>
+        </div>
+        <div class="greentags">
+          <p>創作系</p>
+          <div class="tags">
+            <button type="button" class="tag-button7">既存のタグから選択</button>
+            <button type="button" class="tag-button8">新しくタグを追加</button>
+            <div class="greentags1">
+              {% for t in tag4 %}
+              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              {% endfor %}
+            </div>
+            <div class="greentags2">
+              <input type="text" placeholder="記入してください" class="tag4 create-tag button" name="tag4-1">
+              <input type="text" class="tag4 create-tag button" name="tag4-2">
+              <input type="text" class="tag4 create-tag button" name="tag4-3">
+              <input type="text" class="tag4 create-tag button" name="tag4-4">
+              <input type="text" class="tag4 create-tag button" name="tag4-5">
+            </div>
+          </div>
+        </div>
+        <div class="yellowtags">
+          <p>実益系</p>
+          <div class="tags">
+            <button type="button" class="tag-button9">既存のタグから選択</button>
+            <button type="button" class="tag-button10">新しくタグを追加</button>
+            <div class="yellowtags1">
+              {% for t in tag5 %}
+              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              {% endfor %}
+            </div>
+            <div class="yellowtags2">
+              <input type="text" placeholder="記入してください" class="tag5 create-tag button" name="tag5-1">
+              <input type="text" class="tag5 create-tag button" name="tag5-2">
+              <input type="text" class="tag5 create-tag button" name="tag5-3">
+              <input type="text" class="tag5 create-tag button" name="tag5-4">
+              <input type="text" class="tag5 create-tag button" name="tag5-5">
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="tag-buton">
+      <input type="submit" class="button tag-button" value="次へ">
+    </div>
+    </form>
+  </div>
+</div>
 
-<label for="tag">タグ1</label>
-<input type="text" name="tag1-2">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag1-3">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag1-4">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag1-5">
-
-<p></p>
-
-<p>既存のタグから選択</p>
-{% for t in tag2 %}
-<label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
-{% endfor %}
-<p>新しくタグを追加</p>
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag2-1">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag2-2">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag2-3">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag2-4">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag2-5">
-
-<p></p>
-
-<p>既存のタグから選択</p>
-{% for t in tag3 %}
-<label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
-{% endfor %}
-<p>新しくタグを追加</p>
-<label for="tag">タグ1</label>
-<input type="text" name="tag3-1">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag3-2">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag3-3">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag3-4">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag3-5">
-
-<p></p>
-
-<p>既存のタグから選択</p>
-{% for t in tag4 %}
-<label><input type="checkbox" name="existing" value='{{t.id}}'></label>
-{% endfor %}
-<p>新しくタグを追加</p>
-<label for="tag">タグ1</label>
-<input type="text" name="tag4-1">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag4-2">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag4-3">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag4-4">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag4-5">
-
-<p></p>
-
-<p>既存のタグから選択</p>
-{% for t in tag5 %}
-<label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
-{% endfor %}
-<p>新しくタグを追加</p>
-<label for="tag">タグ1</label>
-<input type="text" name="tag5-1">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag5-2">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag5-3">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag5-4">
-
-<label for="tag">タグ1</label>
-<input type="text" name="tag5-5">
-
-<input type="submit" value="投稿">
-</form>
 {% endblock %}

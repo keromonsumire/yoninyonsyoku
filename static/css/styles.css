@@ -269,6 +269,11 @@ header{
 }
 
 /* upload.htmlについて */
+.tags
+{
+  text-align: center;
+}
+
 .jpeg
 {
   text-align:center;
@@ -278,6 +283,47 @@ header{
 .jpeg p
 {
   margin-top:5px;
+}
+
+/* create_tag.htmlについて */
+.tag-h1
+{
+  text-align: center;
+}
+
+.bluetags
+{
+  padding-top:5px;
+}
+
+.orangetags,.redtags,.greentags,.yellowtags
+{
+  margin-top:10px;
+}
+
+.bluetags,.orangetags,.redtags,.greentags,.yellowtags p
+{
+  margin-top:10px;
+}
+
+
+.bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1,.bluetags2,.orangetags2,.redtags2,.greentags2,.yellowtags2
+{
+  display:none;
+  margin-top:10px;
+}
+
+.create-tag
+{
+  border:none;
+  margin:0;
+  display:inline-block;
+}
+
+.tag-button
+{
+  margin:0 auto;
+  margin-top:30px;
 }
 
 /* 入力フォームを縦に伸ばさない */
@@ -293,33 +339,33 @@ textarea{
   background: rgba(255,0,0,0.5)
 }
 
-/* 改行を反映させる　*/
+/* 改行を反映させる*/
 p {
   white-space: pre-wrap;
 }
 
 .tag1{
-  background-color:gray;
-  color:white;
+  background-color:lightblue;
+  color:#333;
 }
 
 .tag2{
-  background-color:red;
-  color:white;
+  background-color:lightsalmon;
+  color:#333;
 }
 
 .tag3{
-  background-color:blue;
-  color:white;
+  background-color:lightcoral;
+  color:#333;
 }
 
 .tag4{
-  background-color:green;
-  color:white;
+  background-color:lightgreen;
+  color:#333;
 }
 
 .tag5{
-  background-color:purple;
-  color:white;
+  background-color:lightyellow;
+  color:#333;
 }
 

@@ -88,6 +88,8 @@ def blog():
             return render_template('index.html', blogarticles=[], tags = [], names = [])
                     #タイプで検索をする # checkboxからtypeを取得
         elif request.method == "POST":
+            checkboxs = request.form
+            print(checkboxs)
             #AND検索を押したら　r = "AND検索"
             r = request.form.get("andsearch")
             types = request.form.getlist("check")
@@ -117,7 +119,7 @@ def blog():
                         box.append(tag_dict)
                     tags[blogarticle.id] = box
                 flash('チェック入れて検索してください')
-                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names, checkboxs = checkboxs)
                 ##
             
             #OR検索かAND検索かの識別
@@ -181,7 +183,7 @@ def blog():
                 if blogarticles == []:
                     flash('この検索内容では記事がありません')
 
-                return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names)
+                return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, checkboxs = checkboxs)
 
             else:
                 tags = Tag.query.filter(Tag.type_id.in_(types)).all()
