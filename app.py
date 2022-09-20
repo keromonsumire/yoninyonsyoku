@@ -81,12 +81,9 @@ def blog():
     #ユーザーがログインしていれば
     if current_user.is_authenticated:
         if request.method == 'GET':
-            # DBに登録されたデータをすべて取得する
-            blogarticles = BlogArticle.query.all()
-            # 辞書を作成　　　辞書内に配列を作成
-            tags = {}
             return render_template('index.html', blogarticles=[], tags = [], names = [])
-                    #タイプで検索をする # checkboxからtypeを取得
+
+        #タイプで検索をする # checkboxからtypeを取得
         elif request.method == "POST":
             
             #AND検索を押したら　r = "AND検索"
@@ -95,33 +92,9 @@ def blog():
             
             ##もしなにも選択していない場合  ##までつづく
             if types == []:
-                            # DBに登録されたデータをすべて取得する
-                blogarticles = BlogArticle.query.all()
-                # 辞書を作成　　　辞書内に配列を作成
-                tags = {}
-                names = {}
-                # 投稿idを取得
-                for blogarticle in blogarticles:
-                    #blogの投稿主を取得
-                    user = User.query.filter_by(id=blogarticle.user_id).all()
-                    #ユーザーネームをnames辞書に記録
-                    names[blogarticle.id] = user[0].username
-                    #blogarticleのidと一致するものをTag_relationから取得
-                    relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
-                    #配列を作成
-                    box = []
-                    for relation_to_tag in relation_to_tags:
-                        #Tagからnameを取得
-                        tag_dict = {}
-                        tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
-                        tag_dict["name"] = tag.name
-                        tag_dict["type"] = tag.type_id
-                        box.append(tag_dict)
-                    tags[blogarticle.id] = box
                 flash('チェック入れて検索してください')
-                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
-                ##
-            
+                return redirect('/')
+
             #OR検索かAND検索かの識別
             if r =="AND検索":
                 #５つのタイプがあるからそれぞれで繰り返す
@@ -136,8 +109,9 @@ def blog():
                         #tagのidを満たすTag_relationを取得
                         #配列の中へ
                         for tags_to_relation in tags_to_relations:
-                            relation = Tag_relation.query.filter_by(tag_id = tags_to_relation.id).first()
-                            Box.append(relation.article_id)
+                            relations = Tag_relation.query.filter_by(tag_id = tags_to_relation.id).all()
+                            for relation in relations:
+                                Box.append(relation.article_id)
                         box.append(Box)
 
                 get_list = []
@@ -191,8 +165,9 @@ def blog():
             #配列を作成
             relation_box = []
             for tag in tags:
-                tagrelation = Tag_relation.query.filter_by(tag_id = tag.id).first()
-                relation_box.append(tagrelation.article_id)
+                tagrelations = Tag_relation.query.filter_by(tag_id = tag.id).all()
+                for tagrelation in tagrelations:
+                    relation_box.append(tagrelation.article_id)
             
             blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).all()
             # 辞書を作成　　　辞書内に配列を作成
