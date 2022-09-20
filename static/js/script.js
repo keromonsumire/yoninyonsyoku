@@ -78,8 +78,23 @@ $(function() {
     $(".yellowtags2").toggle();
   });
 
-  $(".question").click(function() {
+  $(".question1").click(function() {
     $(".instance1").toggle();
   });
   
+  $(".question2").click(function() {
+    $(".instance2").toggle();
+  });
+
+  $(".question3").click(function() {
+    $(".instance3").toggle();
+  });
+
+  $(".question4").click(function() {
+    $(".instance4").toggle();
+  });
+
+  $(".question5").click(function() {
+    $(".instance5").toggle();
+  });
 });
