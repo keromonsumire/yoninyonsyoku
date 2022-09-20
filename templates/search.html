@@ -3,11 +3,8 @@
 <div class="contents2">
     <div class="content">
         <div class="search">
-            
-            <div  class="search-show">
-
-                <form method="POST" name="search" >
-
+            <div class="search-show">
+                <form method="POST" name="search">
                     <label><input type="checkbox" name="check" value='1'>自分が成長する = 何かを成し遂げる</label>
                     <p></p>
                     <label><input type="checkbox" name="check" value='2'>新しいものに出会って感動する</label>
@@ -18,39 +15,43 @@
                     <p></p>
                     <label><input type="checkbox" name="check" value='5'>実益を兼ねる</label>
                     <p></p>
-                    <input type="submit" name="orsearch" value="OR検索" >
+                    <input type="submit" name="orsearch" value="OR検索">
                     <p></p>
-                    <input type="submit" name="andsearch" value="AND検索" >
-                    
-                    </form>
-                    {% if "1" in types%}
-                    <p>自分が成長する = 何かを成し遂げる  を選択しました</p>
-                    {% endif %}
-                    {% if "2" in types%}
-                    <p>新しいものに出会って感動する  を選択しました</p>
-                    {% endif %}
-                    {% if "3" in types%}
-                    <p>人（動物）と交流する  を選択しました</p>
-                    {% endif %}
-                    {% if "4" in types%}
-                    <p>何かをつくりあげる　自分を表現する  を選択しました</p>
-                    {% endif %}
-                    {% if "5" in types%}
-                    <p>実益を兼ねる  を選択しました</p>
-                    {% endif %}
-                {% for blogarticle in blogarticles %}
-        <article>
-            <img src="../static/image/{{ blogarticle.image }}">
-            <a href="/article/{{ blogarticle.id }}"><h1 class="title">{{ blogarticle.title }}</h1></a>
-            <p>投稿主:{{ names[blogarticle.id] }}</p>
-            {% for tag in tags[blogarticle.id] %}
-            <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
-            {% endfor %}
+                    <input type="submit" name="andsearch" value="AND検索">
 
-            <p>作成日時：{{ blogarticle.created_at }}</p>
-        </article>
-        {% endfor %}
-                
+                </form>
+                {% if "1" in types%}
+                <p>自分が成長する = 何かを成し遂げる を選択しました</p>
+                {% endif %}
+                {% if "2" in types%}
+                <p>新しいものに出会って感動する を選択しました</p>
+                {% endif %}
+                {% if "3" in types%}
+                <p>人（動物）と交流する を選択しました</p>
+                {% endif %}
+                {% if "4" in types%}
+                <p>何かをつくりあげる　自分を表現する を選択しました</p>
+                {% endif %}
+                {% if "5" in types%}
+                <p>実益を兼ねる を選択しました</p>
+                {% endif %}
+                <article>
+                    {% for blogarticle in blogarticles %}
+                    <div class="blog-content">
+                        <a class="search-link" href="/article/{{ blogarticle.id }}">
+                            <div class="search-photo">
+                                <img src="../static/image/{{ blogarticle.image }}">
+                            </div>
+                            <h1 class="title">{{ blogarticle.title }}</h1>
+                            <p>投稿主:{{ names[blogarticle.id] }}</p>
+                            {% for tag in tags[blogarticle.id] %}
+                            <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
+                            {% endfor %}
+                            <p>作成日時：{{ blogarticle.created_at }}</p>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </article>
             </div>
         </div>
     </div>
