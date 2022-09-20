@@ -3,32 +3,33 @@
 {% block content %}
 <div class="contents">
     <div class="content">
-        <div class="sliders">
+        <!-- <div class="sliders">
             <ul id="slider" class="slider">
                 <li><img src="../static/photo/sample1.jpg" alt="サンプル画像" /></li>
                 <li><img src="../static/photo/sample2.jpg" alt="サンプル画像" /></li>
                 <li><img src="../static/photo/sample3.jpg" alt="サンプル画像" /></li>
             </ul>
-            
-        </div>
+        </div> -->
         <form method="POST">
-        <label><input type="checkbox" name="check" value='1'>自分が成長する = 何かを成し遂げる</label>
-        <p></p>
-        <label><input type="checkbox" name="check" value='2'>新しいものに出会って感動する</label>
-        <p></p>
-        <label><input type="checkbox" name="check" value='3'>人（動物）と交流する</label>
-        <p></p>
-        <label><input type="checkbox" name="check" value='4'>何かをつくりあげる　自分を表現する</label>
-        <p></p>
-        <label><input type="checkbox" name="check" value='5'>実益を兼ねる</label>
-        <p></p>
-        <input type="submit" value="検索">
-        <p></p>
+            <label><input type="checkbox" name="check" value='1'>自分が成長する = 何かを成し遂げる</label>
+            <p></p>
+            <label><input type="checkbox" name="check" value='2'>新しいものに出会って感動する</label>
+            <p></p>
+            <label><input type="checkbox" name="check" value='3'>人（動物）と交流する</label>
+            <p></p>
+            <label><input type="checkbox" name="check" value='4'>何かをつくりあげる　自分を表現する</label>
+            <p></p>
+            <label><input type="checkbox" name="check" value='5'>実益を兼ねる</label>
+            <p></p>
+            <input type="submit" value="検索">
+            <p></p>
         </form>
         {% for blogarticle in blogarticles %}
         <article>
             <img src="../static/image/{{ blogarticle.image }}">
-            <a href="/article/{{ blogarticle.id }}"><h1 class="title">{{ blogarticle.title }}</h1></a>
+            <a href="/article/{{ blogarticle.id }}">
+                <h1 class="title">{{ blogarticle.title }}</h1>
+            </a>
             <p>投稿主:{{ names[blogarticle.id] }}</p>
             {% for tag in tags[blogarticle.id] %}
             <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>

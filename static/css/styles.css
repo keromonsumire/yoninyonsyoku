@@ -269,6 +269,11 @@ header{
 }
 
 /* upload.htmlについて */
+.tags
+{
+  text-align: center;
+}
+
 .jpeg
 {
   text-align:center;
@@ -288,25 +293,37 @@ header{
 
 .bluetags
 {
-  padding-top:15px;
+  padding-top:5px;
 }
 
-.bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1
+.orangetags,.redtags,.greentags,.yellowtags
+{
+  margin-top:10px;
+}
+
+.bluetags,.orangetags,.redtags,.greentags,.yellowtags p
+{
+  margin-top:10px;
+}
+
+
+.bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1,.bluetags2,.orangetags2,.redtags2,.greentags2,.yellowtags2
 {
   display:none;
+  margin-top:10px;
 }
-
-.bluetags2,.orangetags2,.redtags2,.greentags2,.yellowtags2
-{
-  display:none;
-}
-
 
 .create-tag
 {
   border:none;
   margin:0;
   display:inline-block;
+}
+
+.tag-button
+{
+  margin:0 auto;
+  margin-top:30px;
 }
 
 /* 入力フォームを縦に伸ばさない */
