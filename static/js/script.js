@@ -77,32 +77,9 @@ $(function() {
   $(".tag-button10").click(function() {
     $(".yellowtags2").toggle();
   });
-  // $(".tag-button2").click(function() {
-  //   $("#graytag1").show();
-  // });
-  // $(".tag-button2").click(function() {
-  //   if ($("#graytag1").show())
-  //     {
-  //       $("#graytag2").show();
-  //     }
-  // });
-  // $(".tag-button2").click(function() {
-  //   if ($("#graytag2").show())
-  //     {
-  //       $("#graytag3").show();
-  //     }
-  // });
-  // $(".tag-button2").click(function() {
-  //   if ($("#graytag3").show())
-  //     {
-  //       $("#graytag4").show();
-  //     }
-  // });
-  // $(".tag-button2").click(function() {
-  //   if ($("#graytag4").show())
-  //     {
-  //       $("#graytag5").show();
-  //     }
-  // });
+
+  $(".question").click(function() {
+    $(".instance1").toggle();
+  });
   
 });
