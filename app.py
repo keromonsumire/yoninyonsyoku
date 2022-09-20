@@ -88,6 +88,9 @@ def blog():
             return render_template('index.html', blogarticles=[], tags = [], names = [])
                     #タイプで検索をする # checkboxからtypeを取得
         elif request.method == "POST":
+            
+            #AND検索を押したら　r = "AND検索"
+            r = request.form.get("andsearch")
             types = request.form.getlist("check")
             ##もしなにも選択していない場合  ##までつづく
             if types == []:
@@ -115,10 +118,74 @@ def blog():
                         box.append(tag_dict)
                     tags[blogarticle.id] = box
                 flash('チェック入れて検索してください')
-                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+                return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names, checkboxs = checkboxs)
                 ##
-            #checkboxでチェックを入れたタイプからTagのインスタンスを生成
-            tags = Tag.query.filter(Tag.type_id.in_(types)).all()
+            
+            #OR検索かAND検索かの識別
+            if r =="AND検索":
+                #５つのタイプがあるからそれぞれで繰り返す
+                box =[]
+                for i in [1,2,3,4,5]:
+                    #typesのなかにそれぞれの数字があれば、チェックボックスにチェックしたということでif文内へ
+                    if f"{i}" in types:
+                        
+                        #タイプを満たすtagのidを取得
+                        tags_to_relations = Tag.query.filter(Tag.type_id== i).all()
+                        Box =[]
+                        #tagのidを満たすTag_relationを取得
+                        #配列の中へ
+                        for tags_to_relation in tags_to_relations:
+                            relation = Tag_relation.query.filter_by(tag_id = tags_to_relation.id).first()
+                            Box.append(relation.article_id)
+                        box.append(Box)
+
+                get_list = []
+                #ここでboxは二次元配列
+                #box内の配列で共通のidだけ取得
+                for i in range(len(box)):
+                    if i == 0 :
+                        merge = f"set(box[{i}])"
+                    else:
+                        merge += f" & set(box[{i}])"
+                #文字列を実行
+                get_list = eval(merge)
+                #共通のidからTag_relationのインスタンスを生成
+                relation_merges = Tag_relation.query.filter(Tag_relation.article_id.in_(get_list)).all()
+              
+                relation_box = []
+                for relation_merge in relation_merges:
+                    
+                    relation_box.append(relation_merge.article_id)
+
+                blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).all()
+                # 辞書を作成　　　辞書内に配列を作成
+                tags = {}
+                names = {}
+                # 投稿idを取得
+                for blogarticle in blogarticles:
+                    #blogの投稿主を取得
+                    user = User.query.filter_by(id=blogarticle.user_id).all()
+                    #ユーザーネームをnames辞書に記録
+                    names[blogarticle.id] = user[0].username
+                    #blogarticleのidと一致するものをTag_relationから取得
+                    relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
+                    #配列を作成
+                    box = []
+                    for relation_to_tag in relation_to_tags:
+                        #Tagからnameを取得
+                        tag_dict = {}
+                        tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
+                        tag_dict["name"] = tag.name
+                        tag_dict["type"] = tag.type_id
+                        box.append(tag_dict)
+                    tags[blogarticle.id] =  box
+                if blogarticles == []:
+                    flash('この検索内容では記事がありません')
+
+                return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
+
+            else:
+                tags = Tag.query.filter(Tag.type_id.in_(types)).all()
             #tagsのid==Tagrelationsのtag_idであるTag_relationのインスタンスを作成し、article_idの配列をつくる
             #配列を作成
             relation_box = []
@@ -148,11 +215,10 @@ def blog():
                     tag_dict["type"] = tag.type_id
                     box.append(tag_dict)
                 tags[blogarticle.id] =  box
-            print(blogarticles) 
             if blogarticles == []:
                 flash('この検索内容では記事がありません')
 
-            return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names)
+            return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
 
     else:
         return redirect('/login')
@@ -160,26 +226,13 @@ def blog():
  
 
 
-#タイプによる登録
+#search
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
     if request.method == "POST":
-        username = request.form.get('username')
-        password = request.form.get('password')
-        # Userのインスタンスを作成
-        if User.query.filter_by(username=username).first() is None:
-            if username == '' or password == '':
-                flash('ユーザー名とパスワードを入力してください')
-                return render_template('signup.html')
-            else:
-                user = User(username=username, password=generate_password_hash(password, method='sha256'))
-                db.session.add(user)
-                db.session.commit()
-                return redirect('/login')
-        else:
-            flash('そのユーザー名はすでに登録されています')
-            return render_template('sesarch.html')
+        
+        return render_template('sesarch.html')
     else:
         return render_template('index.html')
 
@@ -319,11 +372,9 @@ def create_tag():
                 #もし存在すれば、Tag_relationに追加
                 if  tag_existance is not None:
                     tagrelation = Tag_relation(tag_id =tag_existance.id, article_id=session["blog_id"])
-                    print(tagrelation)
                     tag_existance.type_id = number + 1
                     db.session.add(tagrelation)
         existing_tag_ids = request.form.getlist("existing")
-        print(existing_tag_ids)
         for tag_id in existing_tag_ids:
             tagrelation = Tag_relation(tag_id=tag_id, article_id=session["blog_id"])
             db.session.add(tagrelation)
