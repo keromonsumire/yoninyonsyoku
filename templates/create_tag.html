@@ -6,13 +6,14 @@
     <div class="tags">
       <form method="POST">
         <div class="bluetags">
-          <p>成長系</p>
+          <p>成長系<button type="button" class="question">?</button></p>
+          <p class="instance1">タグ例:#思考力を高める #ゲームを上達する #貧困問題を解決する</p>
           <div class="tags">
             <button type="button" class="tag-button1">既存のタグから選択</button>
             <button type="button" class="tag-button2">新しくタグを追加</button>
             <div class="bluetags1">
               {% for t in tag1 %}
-              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              <label class="tag1 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
               {% endfor %}
             </div>
             <div class="bluetags2">
@@ -25,13 +26,13 @@
           </div>
         </div>
         <div class="orangetags">
-          <p>感動系</p>
+          <p>感動系<button type="button">?</button></p>
           <div class="tags">
             <button type="button" class="tag-button3">既存のタグから選択</button>
             <button type="button" class="tag-button4">新しくタグを追加</button>
             <div class="orangetags1">
               {% for t in tag2 %}
-              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              <label class="tag2 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
               {% endfor %}
             </div>
             <div class="orangetags2">
@@ -44,13 +45,13 @@
           </div>
         </div>
         <div class="redtags">
-          <p>交流系</p>
+          <p>交流系<button type="button">?</button></p>
           <div class="tags">
             <button type="button" class="tag-button5">既存のタグから選択</button>
             <button type="button" class="tag-button6">新しくタグを追加</button>
             <div class="redtags1">
               {% for t in tag3 %}
-              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              <label class="tag3 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
               {% endfor %}
             </div>
             <div class="redtags2">
@@ -63,13 +64,13 @@
           </div>
         </div>
         <div class="greentags">
-          <p>創作系</p>
+          <p>創作系<button type="button">?</button></p>
           <div class="tags">
             <button type="button" class="tag-button7">既存のタグから選択</button>
             <button type="button" class="tag-button8">新しくタグを追加</button>
             <div class="greentags1">
               {% for t in tag4 %}
-              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              <label class="tag4 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
               {% endfor %}
             </div>
             <div class="greentags2">
@@ -82,13 +83,13 @@
           </div>
         </div>
         <div class="yellowtags">
-          <p>実益系</p>
+          <p>実益系<button type="button">?</button></p>
           <div class="tags">
             <button type="button" class="tag-button9">既存のタグから選択</button>
             <button type="button" class="tag-button10">新しくタグを追加</button>
             <div class="yellowtags1">
               {% for t in tag5 %}
-              <label><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
+              <label class="tag5 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
               {% endfor %}
             </div>
             <div class="yellowtags2">
