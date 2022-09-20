@@ -85,28 +85,7 @@ def blog():
             blogarticles = BlogArticle.query.all()
             # 辞書を作成　　　辞書内に配列を作成
             tags = {}
-            names = {}
-            # 投稿idを取得
-            for blogarticle in blogarticles:
-                #blogの投稿主を取得
-                user = User.query.filter_by(id=blogarticle.user_id).all()
-                #ユーザーネームをnames辞書に記録
-                names[blogarticle.id] = user[0].username
-                #blogarticleのidと一致するものをTag_relationから取得
-                relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
-                #配列を作成
-                box = []
-                for relation_to_tag in relation_to_tags:
-                    #Tagからnameを取得
-                    tag_dict = {}
-                    tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
-                    tag_dict["name"] = tag.name
-                    tag_dict["type"] = tag.type_id
-                    box.append(tag_dict)
-                tags[blogarticle.id] = box
-            session["a"] = None
-            print(session["a"])
-            return render_template('index.html', blogarticles=blogarticles, tags = tags, names = names)
+            return render_template('index.html', blogarticles=[], tags = [], names = [])
                     #タイプで検索をする # checkboxからtypeを取得
         elif request.method == "POST":
             types = request.form.getlist("check")
