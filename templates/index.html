@@ -6,7 +6,7 @@
         <h1 class="index-h1">あなたは？</h1>
         <div class="create-contents">
             <div class="create-contents2">
-                <form method="POST">
+                <form method="POST" name="search">
                     <label><input type="checkbox" name="check" value='1'>自分が成長する = 何かを成し遂げる</label>
                     <p></p>
                     <label><input type="checkbox" name="check" value='2'>新しいものに出会って感動する</label>
@@ -17,8 +17,11 @@
                     <p></p>
                     <label><input type="checkbox" name="check" value='5'>実益を兼ねる</label>
                     <p></p>
-                    <input type="submit" value="検索">
+                    <input type="submit" name="orsearch" value="OR検索">
                     <p></p>
+                    <input type="submit" name="andsearch" value="AND検索">
+
+
                 </form>
                 {% for blogarticle in blogarticles %}
                 <article>
@@ -38,4 +41,3 @@
         </div>
     </div>
 </div>
-{% endblock %}
