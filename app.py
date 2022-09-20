@@ -88,8 +88,7 @@ def blog():
             return render_template('index.html', blogarticles=[], tags = [], names = [])
                     #タイプで検索をする # checkboxからtypeを取得
         elif request.method == "POST":
-            checkboxs = request.form
-            print(checkboxs)
+            
             #AND検索を押したら　r = "AND検索"
             r = request.form.get("andsearch")
             types = request.form.getlist("check")
@@ -183,7 +182,7 @@ def blog():
                 if blogarticles == []:
                     flash('この検索内容では記事がありません')
 
-                return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, checkboxs = checkboxs)
+                return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
 
             else:
                 tags = Tag.query.filter(Tag.type_id.in_(types)).all()
@@ -219,7 +218,7 @@ def blog():
             if blogarticles == []:
                 flash('この検索内容では記事がありません')
 
-            return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names)
+            return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
 
     else:
         return redirect('/login')
@@ -227,25 +226,13 @@ def blog():
  
 
 
-#タイプによる登録
+#search
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
     if request.method == "POST":
         
-        # Userのインスタンスを作成
-        if User.query.filter_by(username=username).first() is None:
-            if username == '' or password == '':
-                flash('ユーザー名とパスワードを入力してください')
-                return render_template('signup.html')
-            else:
-                user = User(username=username, password=generate_password_hash(password, method='sha256'))
-                db.session.add(user)
-                db.session.commit()
-                return redirect('/login')
-        else:
-            flash('そのユーザー名はすでに登録されています')
-            return render_template('sesarch.html')
+        return render_template('sesarch.html')
     else:
         return render_template('index.html')
 
