@@ -1,16 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{{ blogarticle.title }}</h1>
-    <p>投稿主：{{ user_name }}</p>
-    {% for tag in tags %}
-    <p class='tag{{ tag.type_id }}'>{{ tag.name }}</p>
-    {% endfor %}
-    <img src="../static/image/{{ blogarticle.image }}">
-    {% for content in contents %}
-        {% if content.content_type == "headline" %}
-            <h3 class="headline">{{ content.text}}</h3>
-        {% elif content.content_type == "body" %}
+<div class="contents space">
+    <div class="article-contents">
+        <div class="article-name">
+            <h1>{{ blogarticle.title }}</h1>
+            <p>投稿主：{{ user_name }}</p>
+        </div>
+        {% for tag in tags %}
+        <p class='article-tag tag{{ tag.type_id }}'>{{ tag.name }}</p>
+        {% endfor %}
+        <div class="article-photo">
+            <img src="../static/image/{{ blogarticle.image }}">
+        </div>
+        <div class="article-content">
+            {% for content in contents %}
+            {% if content.content_type == "headline" %}
+            <h2 class="headline">{{ content.text}}</h2>
+            {% elif content.content_type == "body" %}
             <p class="body">{{ content.text}}</p>
-        {% endif %}
-    {% endfor %}
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

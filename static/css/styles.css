@@ -167,12 +167,16 @@ header{
 }
 
 .headline{
-  text-decoration: underline;
   padding-bottom:10px;
 }
 
 .title{
-  padding-bottom:10px;
+  padding:10px;
+}
+
+.body
+{
+  padding-bottom:35px;
 }
 
 .text{
@@ -394,7 +398,6 @@ article
 .search-photo img
 {
   width:100%;
-  height:250px;
   object-fit: cover;
 }
 
@@ -426,6 +429,39 @@ article
   padding:5px;
 }
 
+/* show_article.htmlについて */
+.article-contents
+{
+  width:650px;
+  margin:0 auto;
+  padding-bottom:20px;
+  background-color: #f7f7f7;
+}
+
+.article-name
+{
+  padding:20px;
+  background-color: lavender;
+  margin-bottom:10px;
+}
+
+.article-tag
+{
+  display: inline-block;
+  padding:5px;
+}
+
+.article-photo
+{
+  text-align: center;
+  margin-top:20px;
+}
+
+.article-content
+{
+  padding:20px;
+}
+
 /* 入力フォームを縦に伸ばさない */
 textarea{
   vertical-align: middle;
@@ -444,29 +480,34 @@ p {
   white-space: pre-wrap;
 }
 
-.tag1{
+.tag3{
   background-color:lightsalmon;
   color:white;
-}
-
-.tag2{
-  background-color:lightcoral;
-  color:white;
-}
-
-.tag3{
-  background-color:green;
-  color:white;
+  border-radius: 10px;
 }
 
 .tag4{
+  background-color:lightcoral;
+  color:white;
+  border-radius: 10px;
+}
+
+.tag1{
   background-color:deepskyblue;
   color:white;
+  border-radius: 10px;
+}
+
+.tag2{
+  background-color:#00CC00;
+  color:white;
+  border-radius: 10px;
 }
 
 .tag5{
-  background-color:blueviolet;
+  background-color:#A16EFF;
   color:white;
+  border-radius: 10px;
 }
 
 .center{
