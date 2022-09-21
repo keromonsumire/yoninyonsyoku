@@ -28,10 +28,11 @@
                             </div>
                             <h1 class="title">{{ blogarticle.title }}</h1>
                             <p>投稿主:{{ names[blogarticle.id] }}</p>
+                            <p>{{ blogarticle.created_at.strftime("%Y/%m/%d/%H:%M") }}</p>
                             {% for tag in tags[blogarticle.id] %}
                             <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
                             {% endfor %}
-                            <p>作成日時：{{ blogarticle.created_at }}</p>
+                            
                         </a>
                     </div>
                     {% endfor %}
