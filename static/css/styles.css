@@ -285,7 +285,7 @@ header{
 
 .orangetags,.redtags,.greentags,.yellowtags
 {
-  margin-top:10px;
+  margin-top:20px;
 }
 
 .bluetags p,.orangetags p,.redtags p,.greentags p,.yellowtags p
@@ -379,7 +379,7 @@ article
 
 .blog-content
 {
-  background-color:lightgray;
+  background-color:#f7f7f7;
   margin-top:15px;
   margin-bottom:20px;
   width:30%;
@@ -418,6 +418,12 @@ article
 .search-button
 {
   margin:0 auto;
+  margin-top:20px;
+}
+
+.search-space
+{
+  padding:5px;
 }
 
 /* 入力フォームを縦に伸ばさない */
@@ -439,27 +445,27 @@ p {
 }
 
 .tag1{
-  background-color:lightblue;
-  color:white;
-}
-
-.tag2{
   background-color:lightsalmon;
   color:white;
 }
 
-.tag3{
+.tag2{
   background-color:lightcoral;
   color:white;
 }
 
+.tag3{
+  background-color:green;
+  color:white;
+}
+
 .tag4{
-  background-color:lightgreen;
+  background-color:deepskyblue;
   color:white;
 }
 
 .tag5{
-  background-color:plum;
+  background-color:blueviolet;
   color:white;
 }
 
