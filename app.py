@@ -535,7 +535,7 @@ def upload():
         file = request.files['image']
         file.save(os.path.join('./static/image', file.filename))
         im = Image.open(f"./static/image/{file.filename}")
-        out = im.resize((128, 128))
+        out = im.resize((312, 250))
         out.save(f"./static/image/{file.filename}")
                     
         blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
