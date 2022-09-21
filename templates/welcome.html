@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-
-<h1>趣味を見つける/広めるサイトへようこそ！</h1>
-<h1>Q.あなたは新しい趣味を見つけたいですか？それとも自分の趣味の魅力を伝えたいですか？</h1>
-<a href="/information/search"><p>新たな趣味を見つけたい</p></a>
-<a href="/information/write"><p>趣味の魅力を伝えたい</p></a>
+<div class="contents2 center">
+    <h1 class="welcome">しゅみさんぽへようこそ！</h1>
+    <h1>Q.あなたは<span class="find">新しい趣味を見つけたいですか？</span><br>それとも<span class="write">自分の趣味の魅力を伝えたいですか？</span></h1>
+    <a href="/" class="no-under"><input type="submit" class="button tag-button deepskyblue" value="新しい趣味を見つけたい"></a>
+    <a href="/information/write" class="no-under"><input type="submit" class="button tag-button" value="趣味の魅力を伝えたい"></a>
+</div>
 {% endblock %}

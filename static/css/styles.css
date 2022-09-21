@@ -88,6 +88,10 @@ button{
   font-size:16px;
 }
 
+.deepskyblue{
+  background:deepskyblue;
+}
+
 .button:hover 
 {
 	opacity:0.8;
@@ -523,4 +527,25 @@ p {
 .center-block{
   margin-right: auto;
   margin-left: auto;
+}
+
+.no-under{
+  text-decoration:none;
+}
+
+.find{
+  color:deepskyblue;
+}
+
+.write{
+  color:#EF866B;
+}
+
+.welcome{
+  padding-top:50px;
+}
+
+.info-write{
+  font-size:20px;
+  line-height:1.5;
 }
