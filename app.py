@@ -246,7 +246,7 @@ def login():
         elif check_password_hash(user.password, password):
             login_user(user)
             session["is_login"] = True
-            return redirect('/')
+            return redirect('/create')
         else:
             flash("メールアドレスもしくはパスワードが異なります")
             return render_template('login.html')
