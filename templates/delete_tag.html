@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-<h3>削除するタグを選んでください</h3>
-<form method="POST">
-    {% for name in tag_names %}
-    <label><input type="checkbox" name="tag" value='{{name}}'>{{name}}</label>
-    {% endfor %}
-    <input type="submit" value="削除">
-</form>
+<div class="center contents2">
+    <h3 class="pd-50">削除するタグを選んでください</h3>
+    <form method="POST">
+        {% for name in tag_names %}
+        <label><input type="checkbox" name="tag" value='{{name}}'>{{name}}</label>
+        {% endfor %}
+        <p></p>
+        <input type="submit" value="削除" class="button center-block">
+    </form>
+</div>
 {% endblock %}
