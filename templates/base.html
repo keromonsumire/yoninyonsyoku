@@ -24,13 +24,13 @@
                 <header>
                     <div class="header-logo">
 
-                        <a href="/welcome" id="header-logo"><img src="../static/photo/Logo_gray.jpeg"></a>
+                        <a href="/" id="header-logo"><img src="../static/photo/Logo_gray.jpeg"></a>
 
                     </div>
                     <div class="header-list">
                         <ul>
                             {% if current_user.is_authenticated == True %}
-                            <li class="header-img2"><a href="/">みんなの投稿一覧</a></li>
+                            <li class="header-img2"><a href="/select">みんなの投稿一覧</a></li>
                             <li class="header-img2"><a href="/create" role="button">新規作成画面</a></li>
                             <li class="header-img2"><a href="/user/show" role="button">自分の投稿一覧</a></li>
                             <li class="header-img2"><a href="/logout" role="button">ログアウト</a></li>
