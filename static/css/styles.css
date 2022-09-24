@@ -122,15 +122,13 @@ button{
 /* 灰色部分画面について */
 .yellow
 {
-  background-color: #606060;
+  background-color: #545454;
 }
 
 header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding-top:20px;
-  padding-bottom:20px;
 }
 
 .header-logo h1
