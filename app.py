@@ -253,6 +253,7 @@ def login():
     else:
         return render_template('login.html')
 
+#ログアウト
 @app.route('/logout')
 @login_required
 def logout():
@@ -260,6 +261,7 @@ def logout():
     session["is_login"] = False
     return redirect('/login')
 
+#記事作成
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
 
@@ -311,6 +313,7 @@ def create():
     else:
         return render_template('create.html')
 
+#タグ作成
 @app.route('/create/tag',methods=['GET', 'POST'])
 def create_tag():
     blogarticle = BlogArticle.query.get(session["blog_id"])
@@ -390,7 +393,7 @@ def update(id):
         db.session.commit()
         return redirect('/user/show')
 
-
+#タグ追加
 @app.route('/add_tag/<int:id>', methods=['GET','POST'])
 def add_tag(id):
     blogarticle = BlogArticle.query.get(id)
@@ -438,7 +441,7 @@ def add_tag(id):
         db.session.commit()
         return redirect('/user/show')
 
-
+#タグ削除
 @app.route('/delete_tag/<int:id>', methods=['GET','POST'])
 def delete_tag(id):
     blogarticle = BlogArticle.query.get(id)
@@ -464,7 +467,7 @@ def delete_tag(id):
         db.session.commit()
         return redirect('/user/show')
 
-
+#投稿削除
 @app.route('/delete/<int:id>', methods=['GET'])
 def delete(id):
     # 引数idに一致するデータを取得する
@@ -474,9 +477,7 @@ def delete(id):
     return redirect('/user/show')
 
 
-
-
-
+#自分の投稿一覧
 @app.route('/user/show')
 def show_user():
     user_id = current_user.id
@@ -508,6 +509,7 @@ def show_user():
 
     return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags)
 
+#個別記事の表示
 @app.route('/article/<int:id>')
 def show_article(id):
     blogarticle = BlogArticle.query.get(id)
@@ -521,6 +523,7 @@ def show_article(id):
         tags.append(tag)
     return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags)
 
+#画像のアップロード
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'GET':
@@ -537,6 +540,12 @@ def upload():
 
         db.session.commit()
         return redirect('/select')
+
+@app.route('/image_update/<int:id>', methods=['GET'])
+def image_update(id):
+    if request.method == 'GET':
+        session["blog_id"] = id
+        return render_template('upload.html')
 
 
 if __name__ == '__main__':
