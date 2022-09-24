@@ -2,9 +2,9 @@
 {% block content %}
 <div class="contents2">
   <div class="content space">
-    <h1 class="tag-h1">魅力を追加しましょう</h1>
-    <p class="center pad20">あなたの趣味がよりマッチしそうな人に見つけてもらうために、魅力を追加してみましょう。このサイトでは、人の特性に応じた趣味の楽しさに合わせて、魅力を5種類のタイプに分けました。魅力は動詞系で、タイプに沿った書き方をしてみてください。
-      追加しないタイプが合っても構いませんが、必ず一つ以上タグをつけてください。</p>
+    <h1 class="tag-h1">魅力タグを追加しましょう</h1>
+    <p class="center pad20">あなたの趣味がよりマッチしそうな人に見つけてもらうために、魅力タグを追加してみましょう。このサイトでは、人の特性に応じた趣味の楽しさに合わせて、魅力を5種類のタイプに分けました。魅力は動詞系で、タイプに沿った書き方をしてみてください。
+      追加しないタイプが合っても構いませんが、必ず一つ以上魅力タグをつけてください。</p>
     <div class="tags">
       <form method="POST">
         <div class="bluetags">
@@ -13,8 +13,8 @@
             例:#強くなる #筋肉をつける #かっこよくなる
           </p>
           <div class="tags">
-            <button type="button" class="tag-button1">既存のタグから選択</button>
-            <button type="button" class="tag-button2">新しくタグを追加</button>
+            <button type="button" class="tag-button1">既存の魅力タグから選択</button>
+            <button type="button" class="tag-button2">新しく魅力タグを追加</button>
             <div class="bluetags1">
               {% for t in tag1 %}
               <label class="tag1 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
@@ -35,8 +35,8 @@
             例:#予想外の展開に感動する #伏線回収に心動かされる #知らない土地の喫茶店に感動する
           </p>
           <div class="tags">
-            <button type="button" class="tag-button3">既存のタグから選択</button>
-            <button type="button" class="tag-button4">新しくタグを追加</button>
+            <button type="button" class="tag-button3">既存の魅力タグから選択</button>
+            <button type="button" class="tag-button4">新しく魅力タグを追加</button>
             <div class="orangetags1">
               {% for t in tag2 %}
               <label class="tag2 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
@@ -57,8 +57,8 @@
             例:#友達と一緒に遊ぶ #メンバーと仲良くなる #読者と交流する #飼い犬と遊ぶ
           </p>
           <div class="tags">
-            <button type="button" class="tag-button5">既存のタグから選択</button>
-            <button type="button" class="tag-button6">新しくタグを追加</button>
+            <button type="button" class="tag-button5">既存の魅力タグから選択</button>
+            <button type="button" class="tag-button6">新しく魅力タグを追加</button>
             <div class="redtags1">
               {% for t in tag3 %}
               <label class="tag3 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
@@ -79,8 +79,8 @@
             例:#好きなものを作る #自分を表現する #自分の世界を他人と共有する
           </p>
           <div class="tags">
-            <button type="button" class="tag-button7">既存のタグから選択</button>
-            <button type="button" class="tag-button8">新しくタグを追加</button>
+            <button type="button" class="tag-button7">既存の魅力タグから選択</button>
+            <button type="button" class="tag-button8">新しく魅力タグを追加</button>
             <div class="greentags1">
               {% for t in tag4 %}
               <label class="tag4 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
@@ -101,8 +101,8 @@
             例:#お金を稼ぐ #運動不足を解消する #ストレスを解消する
           </p>
           <div class="tags">
-            <button type="button" class="tag-button9">既存のタグから選択</button>
-            <button type="button" class="tag-button10">新しくタグを追加</button>
+            <button type="button" class="tag-button9">既存の魅力タグから選択</button>
+            <button type="button" class="tag-button10">新しく魅力タグを追加</button>
             <div class="yellowtags1">
               {% for t in tag5 %}
               <label class="tag5 index-space tag-check"><input type="checkbox" name="existing" value='{{t.id}}'>{{t.name}}</label>
