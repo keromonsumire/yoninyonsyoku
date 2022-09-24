@@ -64,7 +64,7 @@ class Content(db.Model):
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
 
-@app.route('/welcome', methods=['GET'])
+@app.route('/', methods=['GET'])
 def welcome():
     return render_template('welcome.html')
 
@@ -76,7 +76,7 @@ def info_search():
 def info_write():
     return render_template('information_write.html')
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/select', methods=['GET', 'POST'])
 def blog():
 #ユーザーがログインしていれば
     if request.method == 'GET':
@@ -92,7 +92,7 @@ def blog():
         ##もしなにも選択していない場合  ##までつづく
         if types == []:
             flash('チェック入れて検索してください')
-            return redirect('/')
+            return redirect('select')
 
         #OR検索かAND検索かの識別
         if r =="AND検索":
@@ -536,7 +536,7 @@ def upload():
         blogarticle[0].image = file.filename
 
         db.session.commit()
-        return redirect('/')
+        return redirect('/select')
 
 
 if __name__ == '__main__':

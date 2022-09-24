@@ -10,7 +10,7 @@
     {% endfor %}
     <a href="/add_tag/{{ blogarticle.id}}"><p>タグを追加する</p></a>
     <a href="/delete_tag/{{ blogarticle.id }}"><p>タグを削除する</p></a>
-    <p>作成日時：{{ blogarticle.created_at }}</p>
+    <p>作成日時：{{ blogarticle.created_at.strftime("%Y/%m/%d/%H:%M") }}</p>
     <a href="/update/{{ blogarticle.id }}" role="button">編集</a>
     <a href="/delete/{{ blogarticle.id }}" role="button">削除</a>
 </article>
