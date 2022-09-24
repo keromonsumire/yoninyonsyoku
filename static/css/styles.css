@@ -299,6 +299,13 @@ header{
   margin-bottom:10px;
 }
 
+.bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1
+{
+  display:flex!important;
+  flex-wrap: wrap;
+  gap: 6px 4px;
+}
+
 .bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1,.bluetags2,.orangetags2,.redtags2,.greentags2,.yellowtags2
 {
   display:none;
@@ -432,7 +439,7 @@ article
 }
 
 /* update.htmlについて */
-table
+.update-table
 {
   width:100%;
   margin:0 auto;
@@ -447,12 +454,12 @@ thead:after {
 	display: block;
 }
 
-th
+.update-th
 {
   width: 20%;
 }
 
-td
+.update-td
 {
   width:80%;
 }

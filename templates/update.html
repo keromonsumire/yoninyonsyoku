@@ -6,28 +6,28 @@
         <div class="create-contents">
             <div class="create-contents2">
                 <form method="POST">
-                    <table>
+                    <table class="update-table">
                         <thead>
                             <tr>
-                                <th><label for="title">タイトル</label></th>
-                                <td><input class="create-title" type="text" name="title" value={{ blogarticle.title }}></td>
+                                <th class="update-th"><label for="title">タイトル</label></th>
+                                <td class="update-td"><input class="create-title" type="text" name="title" value={{ blogarticle.title }}></td>
                             </tr>
                         </thead>
                         <tbody>
                             {% for i in range(length) %}
                             <tr>
-                                <th>
+                                <th class="update-th">
                                     <label for="headline">見出し</label>
                                 </th>
-                                <td>
+                                <td class="update-td">
                                     <input class="create-content" type="text" name='headline{{i}}' value={{ headlines[i].text }}>
                                 </td>
                             </tr>
                             <tr>
-                                <th>
+                                <th class="update-th">
                                     <label for="body">内容</label>
                                 </th>
-                                <td>
+                                <td class="update-td">
                                     <textarea rows="13" type="text" name='body{{i}}'>{{ bodys[i].text }}</textarea>
                                 </td>
                             {% endfor %}
