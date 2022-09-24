@@ -6,15 +6,35 @@
         <div class="create-contents">
             <div class="create-contents2">
                 <form method="POST">
-                    <label for="title">タイトル</label>
-                    <input class="create-title" type="text" name="title" value={{ blogarticle.title }}>
-                    {% for i in range(length) %}
-                    <label for="headline">見出し</label>
-                    <input class="create-content" type="text" name='headline{{i}}' value={{ headlines[i].text }}>
-                    <label for="body">内容</label>
-                    <textarea rows="13" type="text" name='body{{i}}' value={{ bodys[i].text }}></textarea>
-                    {% endfor %}
-                    <input type="submit" value="更新">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><label for="title">タイトル</label></th>
+                                <td><input class="create-title" type="text" name="title" value={{ blogarticle.title }}></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range(length) %}
+                            <tr>
+                                <th>
+                                    <label for="headline">見出し</label>
+                                </th>
+                                <td>
+                                    <input class="create-content" type="text" name='headline{{i}}' value={{ headlines[i].text }}>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <label for="body">内容</label>
+                                </th>
+                                <td>
+                                    <textarea rows="13" type="text" name='body{{i}}'>{{ bodys[i].text }}</textarea>
+                                </td>
+                            {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="submit" class="button" value="更新">
                 </form>
             </div>
         </div>
