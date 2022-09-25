@@ -84,9 +84,9 @@ def welcome():
 def info_search():
     return render_template('information_search.html')
 
-@app.route('/login_session/<int:id>', methods=['GET'])
-def info_search():
-    session[redirect_id] = id
+@app.route('/login_session/<int:id>', methods=['GET','POST'])
+def login_session(id):
+    session["redirect_id"] = id
 
     return redirect('/login')
 
@@ -264,10 +264,16 @@ def login():
         elif check_password_hash(user.password, password):
             login_user(user)
             session["is_login"] = True
-            return redirect('/create')
+
+            if "redirect_id" in session:
+                return redirect (f'article/{session["redirect_id"]}')
+            else:
+                return redirect('/create')
         else:
             flash("メールアドレスもしくはパスワードが異なります")
-            return render_template('login.html')
+
+
+        return render_template('login.html')
     else:
         return render_template('login.html')
 
@@ -550,7 +556,7 @@ def show_user():
     return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags)
 
 #個別記事の表示
-@app.route('/article/<int:id>')
+@app.route('/article/<int:id>', methods=['GET', 'POST'])
 def show_article(id):
     blogarticle = BlogArticle.query.get(id)
     if request.method == "GET":
@@ -562,15 +568,18 @@ def show_article(id):
         for relation in tag_relations:
             tag = Tag.query.filter_by(id=relation.tag_id).first()
             tags.append(tag)
-        comments = Comment.query.filter_by(blog_id=blogarticle.id)
-        return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user)
+        comments = Comment.query.order_by(Comment.comment_id.desc()).filter_by(blog_id=blogarticle.id).all()
+        comment_names = {}
+        for comment in comments:
+            user = User.query.filter_by(id=comment.contributor_id).all()
+            comment_names[comment.contributor_id] = user[0].username
+            
+
+        return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user, comment_names = comment_names)
     #コメントしたとき    
-    elif request.method == 'POST':
-        print(current_user.is_authenticated)
-        #formからcommentを取得
-        #comment = request.form.get('comment')
-        text = "うんち"
-        comment_instance = Comment(blog_id = blogarticle.id, contributor_id=current_user.id, text = comment)
+    else:
+        comment = request.form.get('comment')
+        comment_instance = Comment(blog_id = id, contributor_id = current_user.id, text = comment)
         db.session.add(comment_instance)
         db.session.commit()
 
@@ -582,8 +591,16 @@ def show_article(id):
         for relation in tag_relations:
             tag = Tag.query.filter_by(id=relation.tag_id).all()
             tags.append(tag)
-        comments = Comment.query.filter_by(blog_id=blogarticle.id)
-        return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user)
+
+        #コメントを表示するところ
+        comments = Comment.query.order_by(Comment.comment_id.desc()).filter_by(blog_id=blogarticle.id).all()
+        comment_names = {}
+        for comment in comments:
+            user = User.query.filter_by(id=comment.contributor_id).all()
+            comment_names[comment.contributor_id] = user[0].username
+
+        
+        return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user, comment_names = comment_names)
 
 #画像のアップロード
 @app.route('/upload', methods=['GET', 'POST'])
