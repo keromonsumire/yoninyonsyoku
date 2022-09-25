@@ -328,9 +328,11 @@ def create_tag():
     else:
         m = MeCab.Tagger()
         tag = []
+        count = 0
         for number in range(5): 
             for num in range(5):
                 if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    count += 1
                     results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
                     if not results[-2].startswith('動詞'):
                         flash('タグは動詞系で入力してください')
@@ -342,9 +344,9 @@ def create_tag():
                         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
                 tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
         existing_tag_ids = request.form.getlist("existing")
-        tag_nothing = tag + existing_tag_ids
-        if all([x == '' for x in tag_nothing]):
-            flash('必ず一つ以上のタグを作成してください')
+        count += len(existing_tag_ids)
+        if count > 5 or count < 3:
+            flash('必ず3〜5個の魅力タグを追加してください')
             tag1 = Tag.query.filter_by(type_id=1).all()
             tag2 = Tag.query.filter_by(type_id=2).all()
             tag3 = Tag.query.filter_by(type_id=3).all()
@@ -424,9 +426,11 @@ def add_tag(id):
     else:
         m = MeCab.Tagger()
         tag = []
+        count = 0
         for number in range(5): 
             for num in range(5):
                 if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    count += 1
                     results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
                     if not results[-2].startswith('動詞'):
                         flash('タグは動詞系で入力してください')
@@ -436,7 +440,14 @@ def add_tag(id):
                         tag4 = Tag.query.filter_by(type_id=4).all()
                         tag5 = Tag.query.filter_by(type_id=5).all()
                         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
-                tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+        count += len(Tag_relation.query.filter_by(article_id=id).all())
+        existing_tag_ids = request.form.getlist("existing")
+        count += len(existing_tag_ids)
+        if count > 5:
+            flash('魅力はタグは５個までしか持てません')
+            return redirect(f'/add_tag/{id}')   
+
         for num in range(25):
             #tagが入力されていなければデータベースに入れない
             if tag[num] != "":
@@ -446,6 +457,7 @@ def add_tag(id):
                     new_tag = Tag(name = tag[num])
                     db.session.add(new_tag)
         db.session.commit()
+
         for number in range(5):
             for num in range(5):
                 #Tagテーブルの中に存在するか調べる
@@ -456,8 +468,7 @@ def add_tag(id):
                     print(tagrelation)
                     tag_existance.type_id = number + 1
                     db.session.add(tagrelation)
-        existing_tag_ids = request.form.getlist("existing")
-        print(existing_tag_ids)
+
         for tag_id in existing_tag_ids:
             tagrelation = Tag_relation(tag_id=tag_id, article_id=id)
             db.session.add(tagrelation)
@@ -480,6 +491,10 @@ def delete_tag(id):
         return render_template('delete_tag.html', tag_names = tag_names)
     else:
         tag_names = request.form.getlist("tag")
+        count = len(Tag_relation.query.filter_by(article_id=id).all()) - len(tag_names)
+        if count < 3:
+            flash('タグは必ず３個以上つけてください')
+            return redirect(f'/delete_tag/{id}')
         tag_ids=[]
         for tag_name in tag_names:
             tag = Tag.query.filter_by(name=tag_name).first()
