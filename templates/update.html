@@ -1,32 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>編集画面</h1>
-<form method="POST">
-
-    <label for="title">タイトル</label>
-    <input type="text" name="title" value={{ blogarticle.title }}>
-
-    {% for i in range(length) %}
-    
-
-    <label for="headline">見出し</label>
-    <input type="text" name='headline{{i}}' value= {{ headlines[i].text }}>
-
-    <label for="body">内容</label>
-    <input type="text" name='body{{i}}' value= {{ bodys[i].text }}>
-
-
-    {% endfor %}
-
-    
-
-    
-
-    
-    
-
-   
-
-    <input type="submit" value="更新">
-</form>
+<div class="contents2">
+    <div class="content space">
+        <h1 class="create-h1">編集画面</h1>
+        <div class="create-contents">
+            <div class="create-contents2">
+                <form method="POST">
+                    <table class="update-table">
+                        <thead>
+                            <tr>
+                                <th class="update-th"><label for="title">タイトル</label></th>
+                                <td class="update-td"><input class="create-title" type="text" name="title" value={{ blogarticle.title }}></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range(length) %}
+                            <tr>
+                                <th class="update-th">
+                                    <label for="headline">見出し</label>
+                                </th>
+                                <td class="update-td">
+                                    <input class="create-content" type="text" name='headline{{i}}' value={{ headlines[i].text }}>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="update-th">
+                                    <label for="body">内容</label>
+                                </th>
+                                <td class="update-td">
+                                    <textarea rows="13" type="text" name='body{{i}}'>{{ bodys[i].text }}</textarea>
+                                </td>
+                            {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="submit" class="button" value="更新">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
