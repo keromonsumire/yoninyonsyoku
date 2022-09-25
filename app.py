@@ -30,7 +30,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(25))
     blogarticles = db.relationship('BlogArticle', backref='users', lazy=True)
-
+    comments = db.relationship('Comment', backref='users', lazy=True)
 
 class BlogArticle(db.Model):
     __tablename__ = 'BlogArticle'
@@ -41,6 +41,7 @@ class BlogArticle(db.Model):
     contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
     image = db.Column(db.String(100))
+    comments = db.relationship('Comment', backref='BlogArticle', lazy=True)
 
     
 class Tag_relation(db.Model):
@@ -64,6 +65,16 @@ class Content(db.Model):
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
 
+class Comment(db.Model):
+    __tablename__ = 'Comment'
+    comment_id = db.Column(db.Integer, primary_key=True)
+    blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
+    contributor_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    text = db.Column(db.Text, nullable=False)
+    
+
+
+
 @app.route('/', methods=['GET'])
 def welcome():
     return render_template('welcome.html')
@@ -71,6 +82,12 @@ def welcome():
 @app.route('/information/search', methods=['GET'])
 def info_search():
     return render_template('information_search.html')
+
+@app.route('/login_session/<int:id>', methods=['GET'])
+def info_search():
+    session[redirect_id] = id
+
+    return redirect('/login')
 
 @app.route('/information/write',methods=['GET'])
 def info_write():
@@ -511,15 +528,37 @@ def show_user():
 @app.route('/article/<int:id>')
 def show_article(id):
     blogarticle = BlogArticle.query.get(id)
-    user = User.query.filter_by(id=blogarticle.user_id).all()
-    user_name = user[0].username
-    contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
-    tag_relations = Tag_relation.query.filter_by(article_id = id).all()
-    tags = []
-    for relation in tag_relations:
-        tag = Tag.query.filter_by(id=relation.tag_id).first()
-        tags.append(tag)
-    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags)
+    if request.method == "GET":
+        user = User.query.filter_by(id=blogarticle.user_id).all()
+        user_name = user[0].username
+        contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
+        tag_relations = Tag_relation.query.filter_by(article_id = id).all()
+        tags = []
+        for relation in tag_relations:
+            tag = Tag.query.filter_by(id=relation.tag_id).first()
+            tags.append(tag)
+        comments = Comment.query.filter_by(blog_id=blogarticle.id)
+        return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user)
+    #コメントしたとき    
+    elif request.method == 'POST':
+        print(current_user.is_authenticated)
+        #formからcommentを取得
+        #comment = request.form.get('comment')
+        text = "うんち"
+        comment_instance = Comment(blog_id = blogarticle.id, contributor_id=current_user.id, text = comment)
+        db.session.add(comment_instance)
+        db.session.commit()
+
+        user = User.query.filter_by(id=blogarticle.user_id).all()
+        user_name = user[0].username
+        contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
+        tag_relations = Tag_relation.query.filter_by(article_id = id).all()
+        tags = []
+        for relation in tag_relations:
+            tag = Tag.query.filter_by(id=relation.tag_id).all()
+            tags.append(tag)
+        comments = Comment.query.filter_by(blog_id=blogarticle.id)
+        return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
