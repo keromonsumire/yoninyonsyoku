@@ -11,6 +11,7 @@ import pytz
 import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
 from PIL import Image
+import MeCab
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -325,10 +326,21 @@ def create_tag():
         tag5 = Tag.query.filter_by(type_id=5).all()
         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
+        m = MeCab.Tagger()
         tag = []
         for number in range(5): 
             for num in range(5):
-                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+                if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
+                    if not results[-2].startswith('動詞'):
+                        flash('タグは動詞系で入力してください')
+                        tag1 = Tag.query.filter_by(type_id=1).all()
+                        tag2 = Tag.query.filter_by(type_id=2).all()
+                        tag3 = Tag.query.filter_by(type_id=3).all()
+                        tag4 = Tag.query.filter_by(type_id=4).all()
+                        tag5 = Tag.query.filter_by(type_id=5).all()
+                        return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
         existing_tag_ids = request.form.getlist("existing")
         tag_nothing = tag + existing_tag_ids
         if all([x == '' for x in tag_nothing]):
@@ -410,10 +422,21 @@ def add_tag(id):
         tag5 = Tag.query.filter_by(type_id=5).filter(~Tag.id.in_(tag_ids)).all()
         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
+        m = MeCab.Tagger()
         tag = []
         for number in range(5): 
             for num in range(5):
-                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+                if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
+                    if not results[-2].startswith('動詞'):
+                        flash('タグは動詞系で入力してください')
+                        tag1 = Tag.query.filter_by(type_id=1).all()
+                        tag2 = Tag.query.filter_by(type_id=2).all()
+                        tag3 = Tag.query.filter_by(type_id=3).all()
+                        tag4 = Tag.query.filter_by(type_id=4).all()
+                        tag5 = Tag.query.filter_by(type_id=5).all()
+                        return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
         for num in range(25):
             #tagが入力されていなければデータベースに入れない
             if tag[num] != "":
@@ -553,4 +576,5 @@ def image_update(id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
