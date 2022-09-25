@@ -351,9 +351,11 @@ def create_tag():
     else:
         m = MeCab.Tagger()
         tag = []
+        count = 0
         for number in range(5): 
             for num in range(5):
                 if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    count += 1
                     results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
                     if not results[-2].startswith('動詞'):
                         flash('タグは動詞系で入力してください')
@@ -365,9 +367,9 @@ def create_tag():
                         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
                 tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
         existing_tag_ids = request.form.getlist("existing")
-        tag_nothing = tag + existing_tag_ids
-        if all([x == '' for x in tag_nothing]):
-            flash('必ず一つ以上のタグを作成してください')
+        count += len(existing_tag_ids)
+        if count > 5 or count < 3:
+            flash('必ず3〜5個の魅力タグを追加してください')
             tag1 = Tag.query.filter_by(type_id=1).all()
             tag2 = Tag.query.filter_by(type_id=2).all()
             tag3 = Tag.query.filter_by(type_id=3).all()
@@ -447,9 +449,11 @@ def add_tag(id):
     else:
         m = MeCab.Tagger()
         tag = []
+        count = 0
         for number in range(5): 
             for num in range(5):
                 if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    count += 1
                     results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
                     if not results[-2].startswith('動詞'):
                         flash('タグは動詞系で入力してください')
@@ -459,7 +463,14 @@ def add_tag(id):
                         tag4 = Tag.query.filter_by(type_id=4).all()
                         tag5 = Tag.query.filter_by(type_id=5).all()
                         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
-                tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+        count += len(Tag_relation.query.filter_by(article_id=id).all())
+        existing_tag_ids = request.form.getlist("existing")
+        count += len(existing_tag_ids)
+        if count > 5:
+            flash('魅力はタグは５個までしか持てません')
+            return redirect(f'/add_tag/{id}')   
+
         for num in range(25):
             #tagが入力されていなければデータベースに入れない
             if tag[num] != "":
@@ -469,6 +480,7 @@ def add_tag(id):
                     new_tag = Tag(name = tag[num])
                     db.session.add(new_tag)
         db.session.commit()
+
         for number in range(5):
             for num in range(5):
                 #Tagテーブルの中に存在するか調べる
@@ -479,8 +491,7 @@ def add_tag(id):
                     print(tagrelation)
                     tag_existance.type_id = number + 1
                     db.session.add(tagrelation)
-        existing_tag_ids = request.form.getlist("existing")
-        print(existing_tag_ids)
+
         for tag_id in existing_tag_ids:
             tagrelation = Tag_relation(tag_id=tag_id, article_id=id)
             db.session.add(tagrelation)
@@ -503,6 +514,10 @@ def delete_tag(id):
         return render_template('delete_tag.html', tag_names = tag_names)
     else:
         tag_names = request.form.getlist("tag")
+        count = len(Tag_relation.query.filter_by(article_id=id).all()) - len(tag_names)
+        if count < 3:
+            flash('タグは必ず３個以上つけてください')
+            return redirect(f'/delete_tag/{id}')
         tag_ids=[]
         for tag_name in tag_names:
             tag = Tag.query.filter_by(name=tag_name).first()
@@ -549,8 +564,11 @@ def show_user():
         box = []
         for relation_to_tag in relation_to_tags:
             #Tagからnameを取得
+            tag_dict = {}
             tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
-            box.append(tag.name)
+            tag_dict["name"] = tag.name
+            tag_dict["type"] = tag.type_id
+            box.append(tag_dict)
         tags[blogarticle.id] = box
 
     return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags)
@@ -609,16 +627,18 @@ def upload():
         return render_template('upload.html')
     elif request.method == 'POST':
         file = request.files['image']
-        file.save(os.path.join('./static/image', file.filename))
-        im = Image.open(f"./static/image/{file.filename}")
-        out = im.resize((312, 312))
-        out.save(f"./static/image/{file.filename}")
-                    
-        blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
-        blogarticle[0].image = file.filename
-
-        db.session.commit()
-        return redirect('/select')
+        if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("gif"):
+            file.save(os.path.join('./static/image', file.filename))
+            im = Image.open(f"./static/image/{file.filename}")
+            out = im.resize((312, 312))
+            out.save(f"./static/image/{file.filename}")    
+            blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
+            blogarticle[0].image = file.filename
+            db.session.commit()
+            return redirect('/user/show')
+        else:
+            flash('jpeg, png, gifのどれかにしてください')
+            return redirect('/upload')
 
 @app.route('/image_update/<int:id>', methods=['GET'])
 def image_update(id):
