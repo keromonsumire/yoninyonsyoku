@@ -11,6 +11,7 @@ import pytz
 import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
 from PIL import Image
+import MeCab
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -270,6 +271,7 @@ def login():
     else:
         return render_template('login.html')
 
+#ログアウト
 @app.route('/logout')
 @login_required
 def logout():
@@ -277,6 +279,7 @@ def logout():
     session["is_login"] = False
     return redirect('/login')
 
+#記事作成
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
 
@@ -328,6 +331,7 @@ def create():
     else:
         return render_template('create.html')
 
+#タグ作成
 @app.route('/create/tag',methods=['GET', 'POST'])
 def create_tag():
     blogarticle = BlogArticle.query.get(session["blog_id"])
@@ -339,10 +343,21 @@ def create_tag():
         tag5 = Tag.query.filter_by(type_id=5).all()
         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
+        m = MeCab.Tagger()
         tag = []
         for number in range(5): 
             for num in range(5):
-                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+                if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
+                    if not results[-2].startswith('動詞'):
+                        flash('タグは動詞系で入力してください')
+                        tag1 = Tag.query.filter_by(type_id=1).all()
+                        tag2 = Tag.query.filter_by(type_id=2).all()
+                        tag3 = Tag.query.filter_by(type_id=3).all()
+                        tag4 = Tag.query.filter_by(type_id=4).all()
+                        tag5 = Tag.query.filter_by(type_id=5).all()
+                        return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
         existing_tag_ids = request.form.getlist("existing")
         tag_nothing = tag + existing_tag_ids
         if all([x == '' for x in tag_nothing]):
@@ -407,7 +422,7 @@ def update(id):
         db.session.commit()
         return redirect('/user/show')
 
-
+#タグ追加
 @app.route('/add_tag/<int:id>', methods=['GET','POST'])
 def add_tag(id):
     blogarticle = BlogArticle.query.get(id)
@@ -424,10 +439,21 @@ def add_tag(id):
         tag5 = Tag.query.filter_by(type_id=5).filter(~Tag.id.in_(tag_ids)).all()
         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
+        m = MeCab.Tagger()
         tag = []
         for number in range(5): 
             for num in range(5):
-                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+                if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
+                    if not results[-2].startswith('動詞'):
+                        flash('タグは動詞系で入力してください')
+                        tag1 = Tag.query.filter_by(type_id=1).all()
+                        tag2 = Tag.query.filter_by(type_id=2).all()
+                        tag3 = Tag.query.filter_by(type_id=3).all()
+                        tag4 = Tag.query.filter_by(type_id=4).all()
+                        tag5 = Tag.query.filter_by(type_id=5).all()
+                        return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
         for num in range(25):
             #tagが入力されていなければデータベースに入れない
             if tag[num] != "":
@@ -455,7 +481,7 @@ def add_tag(id):
         db.session.commit()
         return redirect('/user/show')
 
-
+#タグ削除
 @app.route('/delete_tag/<int:id>', methods=['GET','POST'])
 def delete_tag(id):
     blogarticle = BlogArticle.query.get(id)
@@ -481,7 +507,7 @@ def delete_tag(id):
         db.session.commit()
         return redirect('/user/show')
 
-
+#投稿削除
 @app.route('/delete/<int:id>', methods=['GET'])
 def delete(id):
     # 引数idに一致するデータを取得する
@@ -491,9 +517,7 @@ def delete(id):
     return redirect('/user/show')
 
 
-
-
-
+#自分の投稿一覧
 @app.route('/user/show')
 def show_user():
     user_id = current_user.id
@@ -525,6 +549,7 @@ def show_user():
 
     return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags)
 
+#個別記事の表示
 @app.route('/article/<int:id>')
 def show_article(id):
     blogarticle = BlogArticle.query.get(id)
@@ -560,6 +585,7 @@ def show_article(id):
         comments = Comment.query.filter_by(blog_id=blogarticle.id)
         return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user)
 
+#画像のアップロード
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'GET':
@@ -577,7 +603,14 @@ def upload():
         db.session.commit()
         return redirect('/select')
 
+@app.route('/image_update/<int:id>', methods=['GET'])
+def image_update(id):
+    if request.method == 'GET':
+        session["blog_id"] = id
+        return render_template('upload.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
