@@ -149,7 +149,7 @@ def blog():
                 
                 relation_box.append(relation_merge.article_id)
 
-            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).all()
+            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).order_by(BlogArticle.id.desc()).all()
             # 辞書を作成　　　辞書内に配列を作成
             tags = {}
             names = {}
@@ -186,7 +186,7 @@ def blog():
                 for tagrelation in tagrelations:
                     relation_box.append(tagrelation.article_id)
             
-            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).all()
+            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).order_by(BlogArticle.id.desc()).all()
             # 辞書を作成　　　辞書内に配列を作成
             tags = {}
             names = {}
