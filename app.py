@@ -571,16 +571,18 @@ def upload():
         return render_template('upload.html')
     elif request.method == 'POST':
         file = request.files['image']
-        file.save(os.path.join('./static/image', file.filename))
-        im = Image.open(f"./static/image/{file.filename}")
-        out = im.resize((312, 312))
-        out.save(f"./static/image/{file.filename}")
-                    
-        blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
-        blogarticle[0].image = file.filename
-
-        db.session.commit()
-        return redirect('/select')
+        if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("gif"):
+            file.save(os.path.join('./static/image', file.filename))
+            im = Image.open(f"./static/image/{file.filename}")
+            out = im.resize((312, 312))
+            out.save(f"./static/image/{file.filename}")    
+            blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
+            blogarticle[0].image = file.filename
+            db.session.commit()
+            return redirect('/user/show')
+        else:
+            flash('jpeg, png, gifのどれかにしてください')
+            return redirect('/upload')
 
 @app.route('/image_update/<int:id>', methods=['GET'])
 def image_update(id):
