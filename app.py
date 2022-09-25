@@ -503,8 +503,11 @@ def show_user():
         box = []
         for relation_to_tag in relation_to_tags:
             #Tagからnameを取得
+            tag_dict = {}
             tag = Tag.query.filter_by(id = relation_to_tag.tag_id).first()
-            box.append(tag.name)
+            tag_dict["name"] = tag.name
+            tag_dict["type"] = tag.type_id
+            box.append(tag_dict)
         tags[blogarticle.id] = box
 
     return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags)
