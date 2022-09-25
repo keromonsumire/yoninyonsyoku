@@ -571,16 +571,6 @@ def image_update(id):
         return render_template('upload.html')
 
 
-@app.route('/mecab/<string:name>', methods=['GET','POST'])
-def mecab(name):
-    m = MeCab.Tagger()
-    results = m.parse(name).split()
-    if results[-2].startswith('動詞'):
-        result = True
-    else:
-        result = False
-    return render_template('mecab.html', result = result)
-
 if __name__ == '__main__':
     app.run(debug=True)
 
