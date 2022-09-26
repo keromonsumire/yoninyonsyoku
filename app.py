@@ -12,11 +12,13 @@ import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
 from PIL import Image
 import MeCab
+from flask_fontawesome import FontAwesome
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
+fa = FontAwesome(app)
 
 login_manager = LoginManager() 
 login_manager.init_app(app)
@@ -64,6 +66,14 @@ class Content(db.Model):
     content_type = db.Column(db.String(50), nullable=False)
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
+
+class Like(db.Model):
+    __tablename__ = 'Like'
+    id = db.Column(db.Integer, primary_key=True)
+    blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
+    user = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
+
 
 @app.route('/', methods=['GET'])
 def welcome():
@@ -559,10 +569,14 @@ def show_article(id):
     contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
     tag_relations = Tag_relation.query.filter_by(article_id = id).all()
     tags = []
+    like_count = len(Like.query.filter_by(blog_id=id).all())
+    like_check = True
+    if Like.query.filter_by(blog_id=id).filter_by(user=request.remote_addr).first() is None:
+        like_check = False
     for relation in tag_relations:
         tag = Tag.query.filter_by(id=relation.tag_id).first()
         tags.append(tag)
-    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags)
+    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, like_count=like_count, like_check = like_check)
 
 #画像のアップロード
 @app.route('/upload', methods=['GET', 'POST'])
@@ -571,7 +585,7 @@ def upload():
         return render_template('upload.html')
     elif request.method == 'POST':
         file = request.files['image']
-        if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("gif"):
+        if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("jpg") or file.filename.endswith("gif"):
             file.save(os.path.join('./static/image', file.filename))
             im = Image.open(f"./static/image/{file.filename}")
             out = im.resize((312, 312))
@@ -584,11 +598,28 @@ def upload():
             flash('jpeg, png, gifのどれかにしてください')
             return redirect('/upload')
 
+#画像をアップデートする際にその記事のIDをセッションに格納
 @app.route('/image_update/<int:id>', methods=['GET'])
 def image_update(id):
     if request.method == 'GET':
         session["blog_id"] = id
         return render_template('upload.html')
+
+
+@app.route('/like/<int:id>', methods=['GET'])
+def like(id):
+    if request.method == 'GET':
+        existance = Like.query.filter_by(blog_id=id).filter_by(user=request.remote_addr).first()
+        print(existance)
+        print(request.remote_addr)
+        if existance is None:
+            like = Like(blog_id=id, user=request.remote_addr)
+            print(like)
+            db.session.add(like)
+        else:
+            db.session.delete(existance)
+        db.session.commit()
+        return redirect(f'/article/{id}')
 
 
 if __name__ == '__main__':

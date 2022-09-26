@@ -621,3 +621,15 @@ p {
   color: black; 
   opacity:1.0;
 }
+
+.heart{
+  color:white;
+  font-size:2em;
+}
+
+.like-count{
+}
+
+.red{
+  color:red;
+}
