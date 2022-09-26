@@ -12,11 +12,13 @@ import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
 from PIL import Image
 import MeCab
+from flask_fontawesome import FontAwesome
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
+fa = FontAwesome(app)
 
 login_manager = LoginManager() 
 login_manager.init_app(app)
@@ -31,7 +33,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(25))
     blogarticles = db.relationship('BlogArticle', backref='users', lazy=True)
-
+    comments = db.relationship('Comment', backref='users', lazy=True)
 
 class BlogArticle(db.Model):
     __tablename__ = 'BlogArticle'
@@ -42,6 +44,7 @@ class BlogArticle(db.Model):
     contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
     image = db.Column(db.String(100))
+    comments = db.relationship('Comment', backref='BlogArticle', lazy=True)
 
     
 class Tag_relation(db.Model):
@@ -65,6 +68,22 @@ class Content(db.Model):
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
 
+class Comment(db.Model):
+    __tablename__ = 'Comment'
+    comment_id = db.Column(db.Integer, primary_key=True)
+    blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
+    contributor_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    text = db.Column(db.Text, nullable=False)
+    
+
+class Like(db.Model):
+    __tablename__ = 'Like'
+    id = db.Column(db.Integer, primary_key=True)
+    blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
+    user = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
+
+
 @app.route('/', methods=['GET'])
 def welcome():
     return render_template('welcome.html')
@@ -72,6 +91,12 @@ def welcome():
 @app.route('/information/search', methods=['GET'])
 def info_search():
     return render_template('information_search.html')
+
+@app.route('/login_session/<int:id>', methods=['GET','POST'])
+def login_session(id):
+    session["redirect_id"] = id
+
+    return redirect('/login')
 
 @app.route('/information/write',methods=['GET'])
 def info_write():
@@ -132,7 +157,7 @@ def blog():
                 
                 relation_box.append(relation_merge.article_id)
 
-            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).all()
+            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).order_by(BlogArticle.id.desc()).all()
             # 辞書を作成　　　辞書内に配列を作成
             tags = {}
             names = {}
@@ -169,7 +194,7 @@ def blog():
                 for tagrelation in tagrelations:
                     relation_box.append(tagrelation.article_id)
             
-            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).all()
+            blogarticles = BlogArticle.query.filter(BlogArticle.id.in_(relation_box)).order_by(BlogArticle.id.desc()).all()
             # 辞書を作成　　　辞書内に配列を作成
             tags = {}
             names = {}
@@ -247,10 +272,16 @@ def login():
         elif check_password_hash(user.password, password):
             login_user(user)
             session["is_login"] = True
-            return redirect('/create')
+
+            if "redirect_id" in session:
+                return redirect (f'article/{session["redirect_id"]}')
+            else:
+                return redirect('/create')
         else:
             flash("メールアドレスもしくはパスワードが異なります")
-            return render_template('login.html')
+
+
+        return render_template('login.html')
     else:
         return render_template('login.html')
 
@@ -328,9 +359,11 @@ def create_tag():
     else:
         m = MeCab.Tagger()
         tag = []
+        count = 0
         for number in range(5): 
             for num in range(5):
                 if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    count += 1
                     results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
                     if not results[-2].startswith('動詞'):
                         flash('タグは動詞系で入力してください')
@@ -342,9 +375,9 @@ def create_tag():
                         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
                 tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
         existing_tag_ids = request.form.getlist("existing")
-        tag_nothing = tag + existing_tag_ids
-        if all([x == '' for x in tag_nothing]):
-            flash('必ず一つ以上のタグを作成してください')
+        count += len(existing_tag_ids)
+        if count > 5 or count < 3:
+            flash('必ず3〜5個の魅力タグを追加してください')
             tag1 = Tag.query.filter_by(type_id=1).all()
             tag2 = Tag.query.filter_by(type_id=2).all()
             tag3 = Tag.query.filter_by(type_id=3).all()
@@ -424,9 +457,11 @@ def add_tag(id):
     else:
         m = MeCab.Tagger()
         tag = []
+        count = 0
         for number in range(5): 
             for num in range(5):
                 if request.form.get(f'tag{number+1}-{num+1}') != "":
+                    count += 1
                     results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
                     if not results[-2].startswith('動詞'):
                         flash('タグは動詞系で入力してください')
@@ -436,7 +471,14 @@ def add_tag(id):
                         tag4 = Tag.query.filter_by(type_id=4).all()
                         tag5 = Tag.query.filter_by(type_id=5).all()
                         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)  
-                tag.append(request.form.get(f'tag{number+1}-{num+1}'))    
+                tag.append(request.form.get(f'tag{number+1}-{num+1}'))
+        count += len(Tag_relation.query.filter_by(article_id=id).all())
+        existing_tag_ids = request.form.getlist("existing")
+        count += len(existing_tag_ids)
+        if count > 5:
+            flash('魅力はタグは５個までしか持てません')
+            return redirect(f'/add_tag/{id}')   
+
         for num in range(25):
             #tagが入力されていなければデータベースに入れない
             if tag[num] != "":
@@ -446,6 +488,7 @@ def add_tag(id):
                     new_tag = Tag(name = tag[num])
                     db.session.add(new_tag)
         db.session.commit()
+
         for number in range(5):
             for num in range(5):
                 #Tagテーブルの中に存在するか調べる
@@ -456,8 +499,7 @@ def add_tag(id):
                     print(tagrelation)
                     tag_existance.type_id = number + 1
                     db.session.add(tagrelation)
-        existing_tag_ids = request.form.getlist("existing")
-        print(existing_tag_ids)
+
         for tag_id in existing_tag_ids:
             tagrelation = Tag_relation(tag_id=tag_id, article_id=id)
             db.session.add(tagrelation)
@@ -480,6 +522,10 @@ def delete_tag(id):
         return render_template('delete_tag.html', tag_names = tag_names)
     else:
         tag_names = request.form.getlist("tag")
+        count = len(Tag_relation.query.filter_by(article_id=id).all()) - len(tag_names)
+        if count < 3:
+            flash('タグは必ず３個以上つけてください')
+            return redirect(f'/delete_tag/{id}')
         tag_ids=[]
         for tag_name in tag_names:
             tag = Tag.query.filter_by(name=tag_name).first()
@@ -536,18 +582,56 @@ def show_user():
     return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags)
 
 #個別記事の表示
-@app.route('/article/<int:id>')
+@app.route('/article/<int:id>', methods=['GET', 'POST'])
 def show_article(id):
     blogarticle = BlogArticle.query.get(id)
-    user = User.query.filter_by(id=blogarticle.user_id).all()
-    user_name = user[0].username
-    contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
-    tag_relations = Tag_relation.query.filter_by(article_id = id).all()
-    tags = []
-    for relation in tag_relations:
-        tag = Tag.query.filter_by(id=relation.tag_id).first()
-        tags.append(tag)
-    return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags)
+    like_count = len(Like.query.filter_by(blog_id=id).all())
+    like_check = True
+    if Like.query.filter_by(blog_id=id).filter_by(user=request.remote_addr).first() is None:
+            like_check = False
+    if request.method == "GET":
+        user = User.query.filter_by(id=blogarticle.user_id).all()
+        user_name = user[0].username
+        contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
+        tag_relations = Tag_relation.query.filter_by(article_id = id).all()
+        tags = []
+        for relation in tag_relations:
+            tag = Tag.query.filter_by(id=relation.tag_id).first()
+            tags.append(tag)
+        comments = Comment.query.order_by(Comment.comment_id.desc()).filter_by(blog_id=blogarticle.id).all()
+        comment_names = {}
+        for comment in comments:
+            user = User.query.filter_by(id=comment.contributor_id).all()
+            comment_names[comment.contributor_id] = user[0].username
+            
+
+        return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user, comment_names = comment_names, like_count=like_count, like_check = like_check)
+    #コメントしたとき    
+    else:
+        comment = request.form.get('comment')
+        comment_instance = Comment(blog_id = id, contributor_id = current_user.id, text = comment)
+        db.session.add(comment_instance)
+        db.session.commit()
+
+        user = User.query.filter_by(id=blogarticle.user_id).all()
+        user_name = user[0].username
+        contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()
+        tag_relations = Tag_relation.query.filter_by(article_id = id).all()
+        tags = []
+        for relation in tag_relations:
+            tag = Tag.query.filter_by(id=relation.tag_id).all()
+            tags.append(tag)
+
+        #コメントを表示するところ
+        comments = Comment.query.order_by(Comment.comment_id.desc()).filter_by(blog_id=blogarticle.id).all()
+        comment_names = {}
+        for comment in comments:
+            user = User.query.filter_by(id=comment.contributor_id).all()
+            comment_names[comment.contributor_id] = user[0].username
+
+        
+        return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user, comment_names = comment_names, like_count=like_count, like_check = like_check)
+
 
 #画像のアップロード
 @app.route('/upload', methods=['GET', 'POST'])
@@ -556,22 +640,41 @@ def upload():
         return render_template('upload.html')
     elif request.method == 'POST':
         file = request.files['image']
-        file.save(os.path.join('./static/image', file.filename))
-        im = Image.open(f"./static/image/{file.filename}")
-        out = im.resize((312, 312))
-        out.save(f"./static/image/{file.filename}")
-                    
-        blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
-        blogarticle[0].image = file.filename
+        if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("jpg") or file.filename.endswith("gif"):
+            file.save(os.path.join('./static/image', file.filename))
+            im = Image.open(f"./static/image/{file.filename}")
+            out = im.resize((312, 312))
+            out.save(f"./static/image/{file.filename}")    
+            blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
+            blogarticle[0].image = file.filename
+            db.session.commit()
+            return redirect('/user/show')
+        else:
+            flash('jpeg, png, gifのどれかにしてください')
+            return redirect('/upload')
 
-        db.session.commit()
-        return redirect('/select')
-
+#画像をアップデートする際にその記事のIDをセッションに格納
 @app.route('/image_update/<int:id>', methods=['GET'])
 def image_update(id):
     if request.method == 'GET':
         session["blog_id"] = id
         return render_template('upload.html')
+
+
+@app.route('/like/<int:id>', methods=['GET'])
+def like(id):
+    if request.method == 'GET':
+        existance = Like.query.filter_by(blog_id=id).filter_by(user=request.remote_addr).first()
+        print(existance)
+        print(request.remote_addr)
+        if existance is None:
+            like = Like(blog_id=id, user=request.remote_addr)
+            print(like)
+            db.session.add(like)
+        else:
+            db.session.delete(existance)
+        db.session.commit()
+        return redirect(f'/article/{id}')
 
 
 if __name__ == '__main__':
