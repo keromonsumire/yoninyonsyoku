@@ -5,6 +5,11 @@
         <div class="article-name">
             <h1>{{ blogarticle.title }}</h1>
             <p>投稿主：{{ user_name }}</p>
+            {% if like_check == True %}
+            <a href='/like/{{ blogarticle.id }}' class="no-under"><p class="like-count"><span class="fas fa-heart heart red"></span>{{ like_count }}←やってみたい！</p></a>
+            {% else %}
+            <a href='/like/{{ blogarticle.id }}' class="no-under"><p class="like-count"><span class="fas fa-heart heart"></span>{{ like_count }}←やってみたい！</p></a>
+            {% endif %}
         </div>
         {% for tag in tags %}
         <p class='article-tag tag{{ tag.type_id }}'>{{ tag.name }}</p>
