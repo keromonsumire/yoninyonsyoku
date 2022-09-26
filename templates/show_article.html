@@ -5,6 +5,11 @@
         <div class="article-name">
             <h1>{{ blogarticle.title }}</h1>
             <p>投稿主：{{ user_name }}</p>
+            {% if like_check == True %}
+            <a href='/like/{{ blogarticle.id }}' class="no-under"><p class="like-count"><span class="fas fa-heart heart red"></span>{{ like_count }}←やってみたい！</p></a>
+            {% else %}
+            <a href='/like/{{ blogarticle.id }}' class="no-under"><p class="like-count"><span class="fas fa-heart heart"></span>{{ like_count }}←やってみたい！</p></a>
+            {% endif %}
         </div>
         {% for tag in tags %}
         <p class='article-tag tag{{ tag.type_id }}'>{{ tag.name }}</p>
@@ -21,31 +26,27 @@
             {% endif %}
             {% endfor %}
         </div>
-
+        <div class="article-comment">
+            {% for comment in comments %}
+            {{ comment.user_id}}
+            {{ comment.text}}
+            {% endfor %}
+        </div>
         <form method="POST" >
             <!-- ログインしていないと書き込めない -->
             {% if current_user.is_authenticated %}
             <div>
                 <input type="text" name="comment">
             </div>
-            <input type="submit" value="感想をつたえる">
+            <input type="submit" class="button" value="感想をつたえる">
             {% else %}
-            
+            <!-- ここbuttonじゃないとエラー出る -->
+            /login_session/int id
+
+            redirect_id
             {% endif %}
         </form>
-        <!-- ここbuttonじゃないとエラー出る -->
-        {% if current_user.is_authenticated %}
-
-            {% else %}
-            <!-- コメントが出る -->
-            <a href='/login_session/{{blogarticle.id}}'><button >ログインして感想を伝える！</button></a>
-            {% endif %}
-            <div class="article-comment">
-                {% for comment in comments %}
-                {{ comment_names[comment.contributor_id]}}
-                {{ comment.text}}
-                {% endfor %}
-            </div>
+        <a href="/login"><button >ログインして感想を伝える！</button></a>
     </div>
 </div>
 {% endblock %}
