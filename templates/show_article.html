@@ -26,27 +26,23 @@
             {% endif %}
             {% endfor %}
         </div>
-        <div class="article-comment">
-            {% for comment in comments %}
-            {{ comment.user_id}}
-            {{ comment.text}}
-            {% endfor %}
-        </div>
         <form method="POST" >
             <!-- ログインしていないと書き込めない -->
             {% if current_user.is_authenticated %}
             <div>
                 <input type="text" name="comment">
             </div>
-            <input type="submit" class="button" value="感想をつたえる">
-            {% else %}
-            <!-- ここbuttonじゃないとエラー出る -->
-            /login_session/int id
-
-            redirect_id
+            <input type="submit" value="感想をつたえる">
             {% endif %}
         </form>
-        <a href="/login"><button >ログインして感想を伝える！</button></a>
+        <div class="article-comment">
+            {% for comment in comments %}
+            <p>{{ comment_names[comment.contributor_id] }} {{ comment.text}}</p>
+            {% endfor %}
+        </div>
+        {% if current_user.is_authenticated == False %}
+        <a href="/login_session/{{blogarticle.id}}"><button>ログインして感想を伝える！</button></a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
