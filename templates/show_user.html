@@ -17,6 +17,7 @@
                         <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
                         {% endfor %}
                         <p>作成日時：{{ blogarticle.created_at.strftime("%Y/%m/%d/%H:%M") }}</p>
+                        <p class="like-count"><span class="fas fa-heart heart red"></span>{{ likes[blogarticle.id] }}</p>
                         <a href="/add_tag/{{ blogarticle.id}}" class="user">タグの追加</a>
                         <a href="/delete_tag/{{ blogarticle.id }}" class="user">タグの削除</a>
                         <br>
