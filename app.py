@@ -564,11 +564,13 @@ def show_user():
         
     # 辞書を作成　　　辞書内に配列を作成
     tags = {}
+    likes = {}
     # 投稿idを取得
     for blogarticle in blogarticles:
         #blogarticleのidと一致するものをTag_relationから取得        
         relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
-            #配列を作成
+        likes[blogarticle.id] = len(Like.query.filter_by(blog_id=blogarticle.id).all())
+        #配列を作成
         box = []
         for relation_to_tag in relation_to_tags:
             #Tagからnameを取得
@@ -579,7 +581,7 @@ def show_user():
             box.append(tag_dict)
         tags[blogarticle.id] = box
 
-    return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags)
+    return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags, likes=likes)
 
 #個別記事の表示
 @app.route('/article/<int:id>', methods=['GET', 'POST'])
