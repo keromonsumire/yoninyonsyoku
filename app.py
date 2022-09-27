@@ -31,20 +31,20 @@ def load_user(user_id):
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(25))
+    username = db.Column(db.Text, nullable=False, unique=True)
+    password = db.Column(db.Text)
     blogarticles = db.relationship('BlogArticle', backref='users', lazy=True)
     comments = db.relationship('Comment', backref='users', lazy=True)
 
 class BlogArticle(db.Model):
     __tablename__ = 'BlogArticle'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50), nullable=False)
+    title = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
-    image = db.Column(db.String(100))
+    image = db.Column(db.Text)
     comments = db.relationship('Comment', backref='BlogArticle', lazy=True)
 
     
@@ -57,7 +57,7 @@ class Tag_relation(db.Model):
 class Tag(db.Model):
     __tablename__ = 'Tag'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.Text, nullable=False)
     tag_relation = db.relationship('Tag_relation', backref='Tag', lazy=True)
     type_id = db.Column(db.Integer)
 
@@ -65,7 +65,7 @@ class Content(db.Model):
     __tablename__ = 'contents'
     id = db.Column(db.Integer, primary_key=True)
     blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
-    content_type = db.Column(db.String(50), nullable=False)
+    content_type = db.Column(db.Text, nullable=False)
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
 
@@ -81,7 +81,7 @@ class Like(db.Model):
     __tablename__ = 'Like'
     id = db.Column(db.Integer, primary_key=True)
     blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
-    user = db.Column(db.String(100), nullable=False)
+    user = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
 
 
