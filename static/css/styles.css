@@ -334,12 +334,18 @@ header{
 
 .bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1
 {
-  display:flex!important;
+  display:none;
+  margin-top:20px;
+}
+
+.bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1
+{
+  display:flex;
   flex-wrap: wrap;
   gap: 6px 4px;
 }
 
-.bluetags1,.orangetags1,.redtags1,.greentags1,.yellowtags1,.bluetags2,.orangetags2,.redtags2,.greentags2,.yellowtags2
+.bluetags2,.orangetags2,.redtags2,.greentags2,.yellowtags2
 {
   display:none;
   margin-top:20px;
@@ -361,6 +367,26 @@ padding-bottom:20px;
   border:none;
   margin:0;
   display:inline-block;
+}
+
+.buttton-size
+{
+  padding:13px;
+}
+
+.buttton-size:hover 
+{
+	opacity:0.8;
+  cursor: pointer;
+}
+
+.buttton-size:active 
+{
+	-webkit-transform: translate(0,2px);
+	-moz-transform: translate(0,2px);
+	transform: translate(0,2px);
+	border-bottom:none;
+  cursor: pointer;
 }
 
 .tag-check
@@ -540,7 +566,79 @@ thead:after {
 
 .article-content
 {
-  padding:20px;
+  padding:0 20px;
+}
+
+.line
+{
+  width:93%;
+  margin:0 auto;
+  height:10px;
+  border-top:2px solid plum;
+  /* border-bottom:2px solid plum; */
+  padding:0 20px;
+  margin-bottom: 20px;
+}
+
+.gratitude
+{
+  padding:0 20px;
+}
+
+.gratitude-content
+{
+  text-align: center;
+  margin-top:10px;
+}
+
+.gratitude-content textarea
+{
+  width:60%;
+
+}
+
+.gratitude-content input
+{
+  margin:0 auto;
+  margin-top:20px;
+  margin-bottom:20px;
+}
+
+.article-table
+{
+  width:100%;
+  margin-top:10px;
+}
+
+.article-td1
+{
+  width:25%;
+  text-align: center;
+}
+
+.article-td2
+{
+  width:75%;
+  background-color: white;
+  padding:10px;
+}
+
+.table-span
+{
+  height:10px;
+}
+
+.login-a
+{
+  text-decoration: none;
+}
+
+
+.login-button
+{
+  margin:0 auto;
+  margin-top:20px;
+  width:250px;
 }
 
 /* 入力フォームを縦に伸ばさない */
