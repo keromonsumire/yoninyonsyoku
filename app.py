@@ -74,7 +74,7 @@ class Comment(db.Model):
     blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
     contributor_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     text = db.Column(db.Text, nullable=False)
-    
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
 
 class Like(db.Model):
     __tablename__ = 'Like'
