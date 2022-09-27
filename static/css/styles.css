@@ -635,17 +635,17 @@ thead:after {
   height:10px;
 }
 
-.login-a
-{
-  text-decoration: none;
-}
-
 
 .login-button
 {
   margin:0 auto;
   margin-top:20px;
   width:250px;
+}
+
+.login-a:hover
+{
+  opacity: 0.8;
 }
 
 /* 入力フォームを縦に伸ばさない */
@@ -775,21 +775,15 @@ p {
   border-bottom: none;/*線を消す*/
 }
 
+.check-input{
+  display: none;
+}
+
 .check-input:checked + .check-span
 {
   color:black;
 }
 
-/* .check-input:checked + .check-label
-{
-  background-color: white;
-} */
-
-.check-input{
-  display: none;
-  color: black; 
-  opacity:1.0;
-}
 
 .heart{
   color:white;

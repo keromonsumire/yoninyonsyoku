@@ -16,6 +16,25 @@ $(function() {
     }
   });
 
+  
+  // 確認ボタンをクリックするとイベント発動
+  $('#user').click(function() {
+  
+    // もしキャンセルをクリックしたら
+    if (!confirm('本当に削除してよろしいですか？')) {
+  
+      // submitボタンの効果をキャンセルし、クリックしても何も起きない
+      return false;
+  
+  // 「OK」をクリックした際の処理を記述
+    } else {
+  
+      // HTMLに完了メッセージを表示    
+      $('p').text('削除しました');
+  
+    }
+  });
+
   $("#slider").slick({
     "autoplay":true,
     "autoplayaround":1000
@@ -97,4 +116,7 @@ $(function() {
   $(".question5").click(function() {
     $(".instance5").toggle();
   });
+
+
 });
+
