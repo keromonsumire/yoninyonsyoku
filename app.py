@@ -15,9 +15,18 @@ import MeCab
 from flask_fontawesome import FontAwesome
 
 app = Flask(__name__)
-db_uri = "postgresql://dorfwistzafixt:163331f2a38a515b9e82f4b07e0b1578d4ce8fd450c7706321fb824061908c0f@ec2-44-193-178-122.compute-1.amazonaws.com:5432/d77dv846539911"
+#db_uri = "postgresql://dorfwistzafixt:163331f2a38a515b9e82f4b07e0b1578d4ce8fd450c7706321fb824061908c0f@ec2-44-193-178-122.compute-1.amazonaws.com:5432/d77dv846539911"
+db_url = os.environ.get("DB_URL")
+if not db_url:
+    print("DB_URLを設定してください")
+    sys.exit(1)
+secret_key = os.environ.get("SECRET_KEY")
+if not secret_key:
+    print("SECRET_KEYを設定してください")
+    sys.exit(1)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SECRET_KEY'] = secret_key
 db = SQLAlchemy(app)
 fa = FontAwesome(app)
 
