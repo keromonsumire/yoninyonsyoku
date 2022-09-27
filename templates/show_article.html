@@ -7,13 +7,14 @@
             <p>投稿主：{{ user_name }}</p>
             {% if like_check == True %}
             <a href='/like/{{ blogarticle.id }}' class="no-under">
-                <p class="like-count"><span class="fas fa-heart heart red"></span>{{ like_count }}←やってみたい！</p>
+                <p class="like-count"><span class="fas fa-heart heart red"></span>{{ like_count }}</p>
             </a>
             {% else %}
             <a href='/like/{{ blogarticle.id }}' class="no-under">
-                <p class="like-count"><span class="fas fa-heart heart"></span>{{ like_count }}←やってみたい！</p>
+                <p class="like-count"><span class="fas fa-heart heart"></span>{{ like_count }}</p>
             </a>
             {% endif %}
+
         </div>
         {% for tag in tags %}
         <p class='article-tag tag{{ tag.type_id }}'>{{ tag.name }}</p>
@@ -34,21 +35,22 @@
         <div class="gratitude">
             <form method="POST">
                 <!-- ログインしていないと書き込めない -->
-                <h2>感謝を伝えよう！</h2>
                 {% if current_user.is_authenticated %}
+                <h2>感想を伝えてみよう</h2>
                 <div class="gratitude-content">
                     <textarea rows="10" type="text" name="comment"></textarea>
-                    <input type="submit" class="button" value="送信">
+                    <input type="submit" class="button" value="伝える">
                 </div>
                 {% endif %}
             </form>
-            <h2>みんなのコメント</h2>
+            <h2>みんなの感想</h2>
             <div class="article-comment">
                 <table class="article-table">
                     {% for comment in comments %}
                     <tr>
                         <td class="article-td1">
                             <p>{{ comment_names[comment.contributor_id] }}</p>
+                            <p>{{ comment.created_at.strftime("%Y/%m/%d/%H:%M") }}</p>
                         </td>
                         <td class="article-td2">
                             <p>{{ comment.text}}</p>
@@ -59,7 +61,7 @@
                 </table>
             </div>
             {% if current_user.is_authenticated == False %}
-            <a href="/login_session/{{blogarticle.id}}"><button>ログインして感想を伝える！</button></a>
+            <a class="login-a" href="/login_session/{{blogarticle.id}}"><input type="submit" class="button login-button" value="ログインして感想を伝える！"></a>
             {% endif %}
         </div>
     </div>
