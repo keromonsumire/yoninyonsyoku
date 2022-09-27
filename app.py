@@ -550,7 +550,7 @@ def delete(id):
 @app.route('/user/show')
 def show_user():
     user_id = current_user.id
-    blogarticles = BlogArticle.query.filter_by(user_id=user_id).all()
+    blogarticles = BlogArticle.query.filter_by(user_id=user_id).order_by(BlogArticle.created_at.desc()).all()
     content = {}
     for blogarticle in blogarticles:
         contents = Content.query.filter_by(blog_id=blogarticle.id).order_by(Content.seq).all()

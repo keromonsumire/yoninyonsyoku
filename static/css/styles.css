@@ -213,7 +213,11 @@ header{
   padding-top:30px;
 }
 
-.element2, .element3, .element4, .element5
+.element2, .element3
+{
+  padding-top:20px;
+}
+.element4, .element5
 {
   display:none;
   padding-top:20px;
@@ -294,6 +298,9 @@ header{
   border:none;
 }
 
+.create-description{
+  padding-top:10px;
+}
 /* upload.htmlについて */
 .tags
 {
