@@ -562,6 +562,19 @@ def delete(id):
     db.session.commit()
     return redirect('/user/show')
 
+#コメント削除
+@app.route('/delete_comment/<int:commentid>', methods=['GET'])
+def delete_comment(commentid):
+    # 引数commentidに一致するデータを取得する
+    comment = Comment.query.filter_by(comment_id = commentid).first()
+    #戻る記事の番号を取得
+    blogarticle  = BlogArticle.query.filter_by( id = comment.blog_id).first()
+    page = blogarticle.id
+    #コメント削除
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(f'/article/{page}')
+
 
 #自分の投稿一覧
 @app.route('/user/show')
@@ -622,10 +635,12 @@ def show_article(id):
         for comment in comments:
             user = User.query.filter_by(id=comment.contributor_id).all()
             comment_names[comment.contributor_id] = user[0].username
+
             
 
         return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user, comment_names = comment_names, like_count=like_count, like_check = like_check)
     #コメントしたとき    
+
     else:
         comment = request.form.get('comment')
         comment_instance = Comment(blog_id = id, contributor_id = current_user.id, text = comment)
@@ -648,8 +663,10 @@ def show_article(id):
             user = User.query.filter_by(id=comment.contributor_id).all()
             comment_names[comment.contributor_id] = user[0].username
 
+
         
         return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user, comment_names = comment_names, like_count=like_count, like_check = like_check)
+
 
 
 #画像のアップロード
