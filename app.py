@@ -12,6 +12,7 @@ import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
 from PIL import Image
 import MeCab
+import ipadic
 from flask_fontawesome import FontAwesome
 
 app = Flask(__name__)
@@ -367,7 +368,7 @@ def create_tag():
         tag5 = Tag.query.filter_by(type_id=5).all()
         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
-        m = MeCab.Tagger()
+        m = MeCab.Tagger(ipadic.MECAB_ARGS)
         tag = []
         count = 0
         for number in range(5): 
