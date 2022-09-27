@@ -6,9 +6,13 @@
             <h1>{{ blogarticle.title }}</h1>
             <p>投稿主：{{ user_name }}</p>
             {% if like_check == True %}
-            <a href='/like/{{ blogarticle.id }}' class="no-under"><p class="like-count"><span class="fas fa-heart heart red"></span>{{ like_count }}←やってみたい！</p></a>
+            <a href='/like/{{ blogarticle.id }}' class="no-under">
+                <p class="like-count"><span class="fas fa-heart heart red"></span>{{ like_count }}←やってみたい！</p>
+            </a>
             {% else %}
-            <a href='/like/{{ blogarticle.id }}' class="no-under"><p class="like-count"><span class="fas fa-heart heart"></span>{{ like_count }}←やってみたい！</p></a>
+            <a href='/like/{{ blogarticle.id }}' class="no-under">
+                <p class="like-count"><span class="fas fa-heart heart"></span>{{ like_count }}←やってみたい！</p>
+            </a>
             {% endif %}
         </div>
         {% for tag in tags %}
@@ -26,23 +30,38 @@
             {% endif %}
             {% endfor %}
         </div>
-        <form method="POST" >
-            <!-- ログインしていないと書き込めない -->
-            {% if current_user.is_authenticated %}
-            <div>
-                <input type="text" name="comment">
+        <div class="line"></div>
+        <div class="gratitude">
+            <form method="POST">
+                <!-- ログインしていないと書き込めない -->
+                <h2>感謝を伝えよう！</h2>
+                {% if current_user.is_authenticated %}
+                <div class="gratitude-content">
+                    <textarea rows="10" type="text" name="comment"></textarea>
+                    <input type="submit" class="button" value="送信">
+                </div>
+                {% endif %}
+            </form>
+            <h2>みんなのコメント</h2>
+            <div class="article-comment">
+                <table class="article-table">
+                    {% for comment in comments %}
+                    <tr>
+                        <td class="article-td1">
+                            <p>{{ comment_names[comment.contributor_id] }}</p>
+                        </td>
+                        <td class="article-td2">
+                            <p>{{ comment.text}}</p>
+                        </td>
+                    </tr>
+                    <tr class="table-span"></tr>
+                    {% endfor %}
+                </table>
             </div>
-            <input type="submit" value="感想をつたえる">
+            {% if current_user.is_authenticated == False %}
+            <a href="/login_session/{{blogarticle.id}}"><button>ログインして感想を伝える！</button></a>
             {% endif %}
-        </form>
-        <div class="article-comment">
-            {% for comment in comments %}
-            <p>{{ comment_names[comment.contributor_id] }} {{ comment.text}}</p>
-            {% endfor %}
         </div>
-        {% if current_user.is_authenticated == False %}
-        <a href="/login_session/{{blogarticle.id}}"><button>ログインして感想を伝える！</button></a>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
