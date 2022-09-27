@@ -533,7 +533,11 @@ def delete_tag(id):
         for tag_id in tag_ids:
             tag_relation = Tag_relation.query.filter_by(tag_id=tag_id).filter_by(article_id=id).first()
             db.session.delete(tag_relation)
-        db.session.commit()
+            db.session.commit()
+            if Tag_relation.query.filter_by(tag_id=tag_id).first() is None:
+                tag = Tag.query.filter_by(id=tag_id).first()
+                db.session.delete(tag)
+                db.session.commit()
         return redirect('/user/show')
 
 #投稿削除
@@ -541,7 +545,20 @@ def delete_tag(id):
 def delete(id):
     # 引数idに一致するデータを取得する
     blogarticle = BlogArticle.query.get(id)
+    tagrelations = Tag_relation.query.filter_by(article_id=id).all()
+    tag_ids = []
+    #tagrelationの削除
+    for tagrelation in tagrelations:
+        tag_ids.append(tagrelation.tag_id)
+        db.session.delete(tagrelation)
     db.session.delete(blogarticle)
+    db.session.commit()
+    #どの記事にも紐づいていないタグの削除
+    for tag_id in tag_ids:
+        tagrelation = Tag_relation.query.filter_by(tag_id=tag_id).first()
+        if tagrelation is None:
+            tag = Tag.query.filter_by(id=tag_id).first()
+            db.session.delete(tag)
     db.session.commit()
     return redirect('/user/show')
 
