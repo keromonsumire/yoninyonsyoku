@@ -15,7 +15,8 @@ import MeCab
 from flask_fontawesome import FontAwesome
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+db_uri = os.environ.get('DATABASE_URL') or "sqlite:///blog.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 fa = FontAwesome(app)
