@@ -15,7 +15,7 @@ import MeCab
 from flask_fontawesome import FontAwesome
 
 app = Flask(__name__)
-db_uri = postgres://rgqsnhzchooypp:624fac265d363ad103ca0cddcaf0aa6a5ddde01a115144d88be2f0b8b914baf7@ec2-3-219-19-205.compute-1.amazonaws.com:5432/d29rrq782t7v7m
+db_uri = postgresql:dorfwistzafixt:163331f2a38a515b9e82f4b07e0b1578d4ce8fd450c7706321fb824061908c0f@ec2-44-193-178-122.compute-1.amazonaws.com:5432/d77dv846539911
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
