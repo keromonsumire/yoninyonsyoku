@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
+
+
 <div class="contents space">
     <div class="article-contents">
         <div class="article-name">
@@ -61,8 +63,9 @@
                                 <a href='/delete_comment/{{comment.comment_id}}' role= "button" >削除</a>
                             {% endif %}
                             </form>
-                        {% endif %}
                         </td>
+
+                    {% endif %}
                     </tr>
                     <tr class="table-span"></tr>
                     {% endfor %}

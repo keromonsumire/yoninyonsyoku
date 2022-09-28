@@ -128,7 +128,7 @@ def blog():
         
         ##もしなにも選択していない場合  ##までつづく
         if types == []:
-            flash('チェック入れて検索してください')
+            flash('チェック入れて検索してください', 'ng')
             return redirect('select')
 
         #OR検索かAND検索かの識別
@@ -191,7 +191,7 @@ def blog():
                     box.append(tag_dict)
                 tags[blogarticle.id] =  box
             if blogarticles == []:
-                flash('この検索内容では記事がありません')
+                flash('この検索内容では記事がありません', 'ng')
 
             return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
         #or検索
@@ -228,7 +228,7 @@ def blog():
                     box.append(tag_dict)
                 tags[blogarticle.id] =  box
             if blogarticles == []:
-                flash('この検索内容では記事がありません')
+                flash('この検索内容では記事がありません', 'ng')
 
             return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
 
@@ -255,7 +255,7 @@ def signup():
         # Userのインスタンスを作成
         if User.query.filter_by(username=username).first() is None:
             if username == '' or password == '':
-                flash('ユーザー名とパスワードを入力してください')
+                flash('ユーザー名とパスワードを入力してください', 'ng')
                 return render_template('signup.html')
             else:
                 user = User(username=username, password=generate_password_hash(password, method='sha256'))
@@ -263,7 +263,7 @@ def signup():
                 db.session.commit()
                 return redirect('/login')
         else:
-            flash('そのユーザー名はすでに登録されています')
+            flash('そのユーザー名はすでに登録されています', 'ng')
             return render_template('signup.html')
     else:
         return render_template('signup.html')
@@ -278,7 +278,7 @@ def login():
         # Userテーブルからusernameに一致するユーザを取得
         user = User.query.filter_by(username=username).first()
         if user == None:
-            flash('そのユーザー名は存在しません')
+            flash('そのユーザー名は存在しません', 'ng')
             return render_template('login.html')
         elif check_password_hash(user.password, password):
             login_user(user)
@@ -289,7 +289,7 @@ def login():
             else:
                 return redirect('/create')
         else:
-            flash("メールアドレスもしくはパスワードが異なります")
+            flash("メールアドレスもしくはパスワードが異なります", 'ng')
 
 
         return render_template('login.html')
@@ -317,17 +317,17 @@ def create():
             body.append(request.form.get(f'body{num+1}'))
             headline.append(request.form.get(f'headline{num+1}'))
         if title == "":
-            flash('タイトルを入力してください')
+            flash('タイトルを入力してください', 'ng')
             return render_template("create.html")
         elif len(title) > 50:
-            flash('タイトルは50文字以下にしてください')
+            flash('タイトルは50文字以下にしてください', 'ng')
             return render_template("create.html")
         elif headline[0] == "":
             flash('見出しを入力してください')
-            return render_template("create.html")
+            return render_template("create.html", 'ng')
         elif body[0] == "":
-            flash('内容を入力してください')
-            return render_template("create.html")
+            flash('内容を入力してください', 'ng')
+            return render_template("create.html", 'ng')
         else:
             # BlogArticleのインスタンスを作成
             blogarticle = BlogArticle(title=title, user_id=current_user.id, )
@@ -377,7 +377,7 @@ def create_tag():
                     count += 1
                     results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
                     if not results[-2].startswith('動詞'):
-                        flash('タグは動詞系で入力してください')
+                        flash('タグは動詞系で入力してください', 'ng')
                         tag1 = Tag.query.filter_by(type_id=1).all()
                         tag2 = Tag.query.filter_by(type_id=2).all()
                         tag3 = Tag.query.filter_by(type_id=3).all()
@@ -388,7 +388,7 @@ def create_tag():
         existing_tag_ids = request.form.getlist("existing")
         count += len(existing_tag_ids)
         if count > 5 or count < 3:
-            flash('必ず3〜5個の魅力タグを追加してください')
+            flash('必ず3〜5個の魅力タグを追加してください', 'ng')
             tag1 = Tag.query.filter_by(type_id=1).all()
             tag2 = Tag.query.filter_by(type_id=2).all()
             tag3 = Tag.query.filter_by(type_id=3).all()
@@ -475,7 +475,7 @@ def add_tag(id):
                     count += 1
                     results = m.parse(request.form.get(f'tag{number+1}-{num+1}')).split()
                     if not results[-2].startswith('動詞'):
-                        flash('タグは動詞系で入力してください')
+                        flash('タグは動詞で入力してください', 'ng')
                         tag1 = Tag.query.filter_by(type_id=1).all()
                         tag2 = Tag.query.filter_by(type_id=2).all()
                         tag3 = Tag.query.filter_by(type_id=3).all()
@@ -487,7 +487,7 @@ def add_tag(id):
         existing_tag_ids = request.form.getlist("existing")
         count += len(existing_tag_ids)
         if count > 5:
-            flash('魅力はタグは５個までしか持てません')
+            flash('魅力はタグは５個までしか持てません', 'ng')
             return redirect(f'/add_tag/{id}')   
 
         for num in range(25):
@@ -535,7 +535,7 @@ def delete_tag(id):
         tag_names = request.form.getlist("tag")
         count = len(Tag_relation.query.filter_by(article_id=id).all()) - len(tag_names)
         if count < 3:
-            flash('タグは必ず３個以上つけてください')
+            flash('タグは必ず３個以上つけてください', 'ng')
             return redirect(f'/delete_tag/{id}')
         tag_ids=[]
         for tag_name in tag_names:
@@ -691,9 +691,10 @@ def upload():
             blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
             blogarticle[0].image = file.filename
             db.session.commit()
+            flash('投稿ありがとうございます', 'pg')
             return redirect('/user/show')
         else:
-            flash('jpeg, png, gifのどれかにしてください')
+            flash('jpeg, png, gifのどれかにしてください', 'ng')
             return redirect('/upload')
 
 #画像をアップデートする際にその記事のIDをセッションに格納
@@ -718,7 +719,6 @@ def like(id):
             db.session.delete(existance)
         db.session.commit()
         return redirect(f'/article/{id}')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
