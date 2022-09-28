@@ -666,7 +666,7 @@ def show_article(id):
 
         #コメントを表示するところ
         comments = Comment.query.order_by(Comment.comment_id.desc()).filter_by(blog_id=blogarticle.id).all()
-        comment_names = []
+        comment_names = {}
         for comment in comments:
             user = User.query.filter_by(id=comment.contributor_id).all()
             comment_names[comment.contributor_id] = user[0].username
