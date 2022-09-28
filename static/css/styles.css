@@ -665,7 +665,7 @@ textarea{
   padding-top:10px;
   padding-bottom:10px;
   text-align:center;
-  background: rgba(0,0,255,0.5)
+  background: lightgreen;
 }
 
 /* 改行を反映させる*/
