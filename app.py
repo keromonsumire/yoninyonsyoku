@@ -654,10 +654,12 @@ def show_article(id):
         for comment in comments:
             user = User.query.filter_by(id=comment.contributor_id).all()
             comment_names[comment.contributor_id] = user[0].username
+
             
 
         return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user, comment_names = comment_names, like_count=like_count, like_check = like_check)
     #コメントしたとき    
+
     else:
         comment = request.form.get('comment')
         comment_instance = Comment(blog_id = id, contributor_id = current_user.id, text = comment)
@@ -680,8 +682,10 @@ def show_article(id):
             user = User.query.filter_by(id=comment.contributor_id).all()
             comment_names[comment.contributor_id] = user[0].username
 
+
         
         return render_template('show_article.html', blogarticle=blogarticle, contents=contents, user_name=user_name, tags=tags, comments=comments, current_user=current_user, comment_names = comment_names, like_count=like_count, like_check = like_check)
+
 
 
 #画像のアップロード
