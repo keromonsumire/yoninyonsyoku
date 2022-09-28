@@ -322,11 +322,11 @@ def create():
             flash('タイトルは50文字以下にしてください', 'ng')
             return render_template("create.html")
         elif headline[0] == "":
-            flash('見出しを入力してください')
-            return render_template("create.html", 'ng')
+            flash('見出しを入力してください', 'ng')
+            return render_template("create.html")
         elif body[0] == "":
             flash('内容を入力してください', 'ng')
-            return render_template("create.html", 'ng')
+            return render_template("create.html")
         else:
             # BlogArticleのインスタンスを作成
             blogarticle = BlogArticle(title=title, user_id=current_user.id, )
