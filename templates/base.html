@@ -7,8 +7,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- twitter -->
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@flickr" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Small Island Developing States Photo Submission" />
         <meta name="twitter:description" content="View the album on Flickr." />
         <meta name="twitter:image" content="https://farm6.staticflickr.com/5510/14338202952_93595258ff_z.jpg" />
@@ -52,15 +51,16 @@
             </div>
         </div>
         <!-- flashメッセージ -->
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <ul>
-            {% for message in messages %}
-                <li class="message">{{ message }}</li>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
             {% endfor %}
             </ul>
         {% endif %}
         {% endwith %}
+
         {% block content %}
         {% endblock %}
     </body>
