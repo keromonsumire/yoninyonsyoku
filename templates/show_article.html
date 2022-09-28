@@ -130,26 +130,33 @@
                         </td>
                         <td class="article-td2">
                             <p>{{ comment.text}}</p>
+                        </td>
+                        <td class="article-td3">
                             {% if comment.contributor_id == current_user.id %}
-                            <form method="POST" >
-                            <!-- ログインしていてかつ　コメントを投稿したことがあると削除マーク表示-->
-                            {% if current_user.is_authenticated %}
-                                <a href='/delete_comment/{{comment.comment_id}}' role= "button" >削除</a>
-                            {% endif %}
+                            <form method="POST">
+                                <!-- ログインしていてかつ　コメントを投稿したことがあると削除マーク表示-->
+                                {% if current_user.is_authenticated %}
+                                <a href='/delete_comment/{{comment.comment_id}}' class="comment-a" role="button"><button
+                                        type="button" class="comment-button">削除</button></a>
+                                {% endif %}
                             </form>
                         </td>
-
-                    {% endif %}
+                        {% endif %}
                     </tr>
                     <tr class="table-span"></tr>
                     {% endfor %}
                 </table>
             </div>
             {% if current_user.is_authenticated == False %}
-            <a class="login-a" href="/login_session/{{blogarticle.id}}"><input type="submit" class="button login-button" value="ログインして感想を伝える！"></a>
+            <a class="comment-a" href="/login_session/{{blogarticle.id}}"><input type="submit" class="button login-button" value="ログインして感想を伝える！"></a>
             {% endif %}
+            </form>
+            <div class="article-comment">
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
+                data-hashtags="趣味さんぽ" data-show-count="false">Tweetする</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
         </div>
-        <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-hashtags="趣味さんぽ" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     </div>
 </div>
 </html>
