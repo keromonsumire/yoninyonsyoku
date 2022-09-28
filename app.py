@@ -327,6 +327,15 @@ def create():
         elif body[0] == "":
             flash('内容を入力してください', 'ng')
             return render_template("create.html")
+        for num in range(5):
+            if headline[num] != "":
+                if body[num] == "":
+                    flash('見出しには必ず内容をつけてください', 'ng')
+                    return render_template("create.html")
+            if body[num] != "":
+                if headline[num] == "":
+                    flash('内容には必ず見出しをつけてください', 'ng')
+                    return render_template('create.html')
         else:
             # BlogArticleのインスタンスを作成
             blogarticle = BlogArticle(title=title, user_id=current_user.id, )
@@ -682,10 +691,12 @@ def upload():
         return render_template('upload.html')
     elif request.method == 'POST':
         file = request.files['image']
+        print(file)
         if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("jpg") or file.filename.endswith("gif"):
             file.save(os.path.join('./static/image', file.filename))
             im = Image.open(f"./static/image/{file.filename}")
             out = im.resize((312, 312))
+            print(out)
             out.save(f"./static/image/{file.filename}")    
             blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
             blogarticle[0].image = file.filename
