@@ -1,7 +1,7 @@
 import numbers
 from operator import truediv
 from flask import Flask
-from flask import render_template, request, redirect, url_for, session, flash
+from flask import render_template, request, redirect, url_for, session, flash, make_response
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -10,10 +10,12 @@ from datetime import datetime
 import pytz
 import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
+import io
 from PIL import Image
 import MeCab
 import ipadic
 from flask_fontawesome import FontAwesome
+
 
 app = Flask(__name__)
 db_uri = os.environ.get("DB_URI")
@@ -53,7 +55,7 @@ class BlogArticle(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
-    image = db.Column(db.Text)
+    image_id = db.Column(db.Integer)
     comments = db.relationship('Comment', backref='BlogArticle', lazy=True)
 
     
@@ -93,6 +95,11 @@ class Like(db.Model):
     user = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
 
+class Images(db.Model):
+    __tablename__ = 'Images'
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.Text)
+    data = db.Column(db.LargeBinary)
 
 @app.route('/', methods=['GET'])
 def welcome():
@@ -698,12 +705,17 @@ def upload():
         print(file)
         if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("jpg") or file.filename.endswith("gif"):
             file.save(os.path.join('./static/image', file.filename))
-            im = Image.open(f"./static/image/{file.filename}")
-            out = im.resize((312, 312))
-            print(out)
-            out.save(f"./static/image/{file.filename}")    
-            blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
-            blogarticle[0].image = file.filename
+            im = Image.open(f'./static/image/{file.filename}', mode='r')
+            resized_img = im.resize((312, 312))
+            img_bytes = io.BytesIO()
+            resized_img.save(img_bytes, format='PNG')
+            img_bytes = img_bytes.getvalue()
+            image = Images(filename=file.filename,data=img_bytes)
+            db.session.add(image)
+            db.session.commit()
+            image = Images.query.order_by(Images.id.desc()).limit(1).first()
+            blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).first()
+            blogarticle.image_id = image.id
             db.session.commit()
             flash('投稿ありがとうございます', 'pg')
             return redirect('/user/show')
@@ -733,6 +745,16 @@ def like(id):
             db.session.delete(existance)
         db.session.commit()
         return redirect(f'/article/{id}')
+
+
+@app.route('/api_image/<int:id>', methods=['GET'])
+def api_image(id):
+    if request.method == 'GET':
+        images = Images.query.filter_by(id=id).first()
+        img_bin = io.BytesIO(images.data).getvalue()
+        response = make_response(img_bin)
+        return response
+
 
 if __name__ == '__main__':
     app.run(debug=True)

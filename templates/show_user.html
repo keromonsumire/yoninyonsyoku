@@ -9,7 +9,7 @@
                     {% for blogarticle in blogarticles %}
                     <div class="blog-content2">
                         <div class="search-photo">
-                            <img src="../static/image/{{ blogarticle.image }}">
+                            <img src="/api_image/{{ blogarticle.image_id }}">
                         </div>
                         <a href="/image_update/{{ blogarticle.id }}" class="user" role="button">サムネイルを編集する</a>
                         <h1 class="title">タイトル：{{ blogarticle.title }}</h1>

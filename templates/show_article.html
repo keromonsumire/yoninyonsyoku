@@ -96,7 +96,7 @@
         <p class='article-tag tag{{ tag.type_id }}'>{{ tag.name }}</p>
         {% endfor %}
         <div class="article-photo">
-            <img src="../static/image/{{ blogarticle.image }}">
+            <img src="/api_image/{{ blogarticle.image_id }}">
         </div>
         <div class="article-content">
             {% for content in contents %}
