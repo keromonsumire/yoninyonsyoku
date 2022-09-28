@@ -611,6 +611,12 @@ thead:after {
   margin-bottom:20px;
 }
 
+.article-comment
+{
+  text-align: center;
+  margin-top:15px;
+}
+
 .article-table
 {
   width:100%;
@@ -625,9 +631,16 @@ thead:after {
 
 .article-td2
 {
-  width:75%;
+  width:65%;
   background-color: white;
   padding:10px;
+  text-align: left;
+}
+
+.article-td3
+{
+  width:10%;
+  text-align: center;
 }
 
 .table-span
@@ -646,6 +659,20 @@ thead:after {
 .login-a:hover
 {
   opacity: 0.8;
+}
+
+.comment-a
+{
+  text-decoration: none;
+}
+
+.comment-button
+{
+  padding:10px 13px;
+  border-radius: 30px;
+  background-color: #F99292;
+  color:white;
+  border:none;
 }
 
 /* 入力フォームを縦に伸ばさない */

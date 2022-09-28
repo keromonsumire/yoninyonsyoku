@@ -12,11 +12,21 @@ import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
 from PIL import Image
 import MeCab
+import ipadic
 from flask_fontawesome import FontAwesome
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-app.config['SECRET_KEY'] = os.urandom(24)
+db_uri = os.environ.get("DB_URI")
+if not db_uri:
+    print("DB_URIを設定してください")
+    sys.exit(1)
+secret_key = os.environ.get("SECRET_KEY")
+if not secret_key:
+    print("SECRET_KEYを設定してください")
+    sys.exit(1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+app.config['SECRET_KEY'] = secret_key
 db = SQLAlchemy(app)
 fa = FontAwesome(app)
 
@@ -30,20 +40,20 @@ def load_user(user_id):
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(25))
+    username = db.Column(db.Text, nullable=False, unique=True)
+    password = db.Column(db.Text)
     blogarticles = db.relationship('BlogArticle', backref='users', lazy=True)
     comments = db.relationship('Comment', backref='users', lazy=True)
 
 class BlogArticle(db.Model):
     __tablename__ = 'BlogArticle'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50), nullable=False)
+    title = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     contents = db.relationship('Content', backref='BlogArticle')
     tag_relation = db.relationship('Tag_relation', backref='BlogArticle', lazy=True)
-    image = db.Column(db.String(100))
+    image = db.Column(db.Text)
     comments = db.relationship('Comment', backref='BlogArticle', lazy=True)
 
     
@@ -56,7 +66,7 @@ class Tag_relation(db.Model):
 class Tag(db.Model):
     __tablename__ = 'Tag'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.Text, nullable=False)
     tag_relation = db.relationship('Tag_relation', backref='Tag', lazy=True)
     type_id = db.Column(db.Integer)
 
@@ -64,7 +74,7 @@ class Content(db.Model):
     __tablename__ = 'contents'
     id = db.Column(db.Integer, primary_key=True)
     blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
-    content_type = db.Column(db.String(50), nullable=False)
+    content_type = db.Column(db.Text, nullable=False)
     text = db.Column(db.Text)
     seq = db.Column(db.Integer, nullable=False)
 
@@ -80,7 +90,7 @@ class Like(db.Model):
     __tablename__ = 'Like'
     id = db.Column(db.Integer, primary_key=True)
     blog_id = db.Column(db.Integer, db.ForeignKey('BlogArticle.id'))
-    user = db.Column(db.String(100), nullable=False)
+    user = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now(pytz.timezone('Asia/Tokyo')))
 
 
@@ -312,11 +322,20 @@ def create():
             flash('タイトルは50文字以下にしてください', 'ng')
             return render_template("create.html")
         elif headline[0] == "":
-            flash('見出しを入力してください')
-            return render_template("create.html", 'ng')
+            flash('見出しを入力してください', 'ng')
+            return render_template("create.html")
         elif body[0] == "":
             flash('内容を入力してください', 'ng')
-            return render_template("create.html", 'ng')
+            return render_template("create.html")
+        for num in range(5):
+            if headline[num] != "":
+                if body[num] == "":
+                    flash('見出しには必ず内容をつけてください', 'ng')
+                    return render_template("create.html")
+            if body[num] != "":
+                if headline[num] == "":
+                    flash('内容には必ず見出しをつけてください', 'ng')
+                    return render_template('create.html')
         else:
             # BlogArticleのインスタンスを作成
             blogarticle = BlogArticle(title=title, user_id=current_user.id, )
@@ -357,7 +376,7 @@ def create_tag():
         tag5 = Tag.query.filter_by(type_id=5).all()
         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
-        m = MeCab.Tagger()
+        m = MeCab.Tagger(ipadic.MECAB_ARGS)
         tag = []
         count = 0
         for number in range(5): 
@@ -676,10 +695,12 @@ def upload():
         return render_template('upload.html')
     elif request.method == 'POST':
         file = request.files['image']
+        print(file)
         if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("jpg") or file.filename.endswith("gif"):
             file.save(os.path.join('./static/image', file.filename))
             im = Image.open(f"./static/image/{file.filename}")
             out = im.resize((312, 312))
+            print(out)
             out.save(f"./static/image/{file.filename}")    
             blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).all()
             blogarticle[0].image = file.filename
