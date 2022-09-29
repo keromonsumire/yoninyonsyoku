@@ -573,7 +573,7 @@ def delete_tag(id):
 def delete(id):
     # 引数idに一致するデータを取得する
     blogarticle = BlogArticle.query.get(id)
-    if blogarticle.user_id != current_user.id:
+    if blogarticle.user_id != current_user.id and current_user.id == 3:
         flash('権限がありません', 'ng')
         return redirect('/')
     tagrelations = Tag_relation.query.filter_by(article_id=id).all()
@@ -599,7 +599,7 @@ def delete(id):
 def delete_comment(commentid):
     # 引数commentidに一致するデータを取得する
     comment = Comment.query.filter_by(comment_id = commentid).first()
-    if comment.contributor_id != current_user.id:
+    if comment.contributor_id != current_user.id and current_user.id != 3:
         flash('権限がありません', 'ng')
         return redirect('/')
     #戻る記事の番号を取得
