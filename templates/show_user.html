@@ -12,7 +12,7 @@
                             <img src="/api_image/{{ blogarticle.image_id }}">
                         </div>
                         <a href="/image_update/{{ blogarticle.id }}" class="user" role="button">サムネイルを編集する</a>
-                        <h1 class="title">タイトル：{{ blogarticle.title }}</h1>
+                        <h1 class="title">{{ blogarticle.title }}</h1>
                         {% for tag in tags[blogarticle.id] %}
                         <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
                         {% endfor %}
