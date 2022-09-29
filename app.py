@@ -32,6 +32,7 @@ app.config['SECRET_KEY'] = secret_key
 db = SQLAlchemy(app)
 fa = FontAwesome(app)
 
+
 login_manager = LoginManager() 
 login_manager.init_app(app)
 
@@ -238,19 +239,6 @@ def blog():
 
             return render_template('search.html', blogarticles=blogarticles, tags = tags, names = names, types = types)
 
- 
-#search
-@app.route('/search', methods=['GET', 'POST'])
-@login_required
-def search():
-    if request.method == "POST":
-        
-        return render_template('sesarch.html')
-    else:
-        return render_template('index.html')
-
-
-
 
 #ユーザー登録
 @app.route('/signup', methods=['GET', 'POST'])
@@ -373,6 +361,7 @@ def create():
 
 #タグ作成
 @app.route('/create/tag',methods=['GET', 'POST'])
+@login_required
 def create_tag():
     blogarticle = BlogArticle.query.get(session["blog_id"])
     if request.method == "GET":
@@ -440,9 +429,13 @@ def create_tag():
 
 
 @app.route('/update/<int:id>',methods=['GET', 'POST'])
+@login_required
 def update(id):
     # 引数idに一致するデータを取得する➡blogarticleのデータを取得
     blogarticle = BlogArticle.query.get(id)
+    if blogarticle.user_id != current_user.id:
+        flash('権限がありません', 'ng')
+        redirect
     content = Content.query.filter_by(blog_id=id).all()
     headlines = Content.query.filter_by(content_type="headline").filter_by(blog_id=id).all()
     bodys = Content.query.filter_by(content_type="body").filter_by(blog_id=id).all()
@@ -466,8 +459,12 @@ def update(id):
 
 #タグ追加
 @app.route('/add_tag/<int:id>', methods=['GET','POST'])
+@login_required
 def add_tag(id):
     blogarticle = BlogArticle.query.get(id)
+    if blogarticle.user_id != current_user.id:
+        flash('権限がありません', 'ng')
+        redirect('/')
     if request.method == "GET":
         relations = Tag_relation.query.filter_by(article_id=id).all()
         tag_ids =[]
@@ -481,7 +478,7 @@ def add_tag(id):
         tag5 = Tag.query.filter_by(type_id=5).filter(~Tag.id.in_(tag_ids)).all()
         return render_template('create_tag.html',tag1=tag1, tag2=tag2, tag3=tag3, tag4=tag4, tag5=tag5)
     else:
-        m = MeCab.Tagger()
+        m = MeCab.Tagger(ipadic.MECAB_ARGS)
         tag = []
         count = 0
         for number in range(5): 
@@ -534,8 +531,12 @@ def add_tag(id):
 
 #タグ削除
 @app.route('/delete_tag/<int:id>', methods=['GET','POST'])
+@login_required
 def delete_tag(id):
     blogarticle = BlogArticle.query.get(id)
+    if blogarticle.user_id != current_user.id:
+        flash('権限がありません')
+        return redirect('/')
     if request.method == "GET":
         tag_ids=[]
         tag_relations = Tag_relation.query.filter_by(article_id=id).all()
@@ -568,9 +569,13 @@ def delete_tag(id):
 
 #投稿削除
 @app.route('/delete/<int:id>', methods=['GET'])
+@login_required
 def delete(id):
     # 引数idに一致するデータを取得する
     blogarticle = BlogArticle.query.get(id)
+    if blogarticle.user_id != current_user.id:
+        flash('権限がありません', 'ng')
+        return redirect('/')
     tagrelations = Tag_relation.query.filter_by(article_id=id).all()
     tag_ids = []
     #tagrelationの削除
@@ -590,9 +595,13 @@ def delete(id):
 
 #コメント削除
 @app.route('/delete_comment/<int:commentid>', methods=['GET'])
+@login_required
 def delete_comment(commentid):
     # 引数commentidに一致するデータを取得する
     comment = Comment.query.filter_by(comment_id = commentid).first()
+    if comment.contributor_id != current_user.id:
+        flash('権限がありません', 'ng')
+        return redirect('/')
     #戻る記事の番号を取得
     blogarticle  = BlogArticle.query.filter_by( id = comment.blog_id).first()
     page = blogarticle.id
@@ -707,10 +716,15 @@ def show_article(id):
 
 #画像のアップロード
 @app.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload():
     if request.method == 'GET':
         return render_template('upload.html')
     elif request.method == 'POST':
+        blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).first()
+        if blogarticle.user_id != current_user.id:
+            flash('権限がありません')
+            return redirect('/')
         file = request.files['image']
         print(file)
         if file.filename.endswith("png") or file.filename.endswith("jpeg") or file.filename.endswith("jpg") or file.filename.endswith("gif"):
@@ -724,7 +738,6 @@ def upload():
             db.session.add(image)
             db.session.commit()
             image = Images.query.order_by(Images.id.desc()).limit(1).first()
-            blogarticle = BlogArticle.query.filter_by(id = session["blog_id"]).first()
             blogarticle.image_id = image.id
             db.session.commit()
             flash('投稿ありがとうございます', 'pg')
@@ -735,6 +748,7 @@ def upload():
 
 #画像をアップデートする際にその記事のIDをセッションに格納
 @app.route('/image_update/<int:id>', methods=['GET'])
+@login_required
 def image_update(id):
     if request.method == 'GET':
         session["blog_id"] = id
