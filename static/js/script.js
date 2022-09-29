@@ -116,7 +116,5 @@ $(function() {
   $(".question5").click(function() {
     $(".instance5").toggle();
   });
-
-
 });
 
