@@ -573,7 +573,7 @@ def delete_tag(id):
 def delete(id):
     # 引数idに一致するデータを取得する
     blogarticle = BlogArticle.query.get(id)
-    if blogarticle.user_id != current_user.id:
+    if blogarticle.user_id != current_user.id and current_user.id != 3:
         flash('権限がありません', 'ng')
         return redirect('/')
     tagrelations = Tag_relation.query.filter_by(article_id=id).all()
@@ -599,7 +599,7 @@ def delete(id):
 def delete_comment(commentid):
     # 引数commentidに一致するデータを取得する
     comment = Comment.query.filter_by(comment_id = commentid).first()
-    if comment.contributor_id != current_user.id:
+    if comment.contributor_id != current_user.id and current_user.id != 3:
         flash('権限がありません', 'ng')
         return redirect('/')
     #戻る記事の番号を取得
@@ -630,7 +630,7 @@ def show_user():
     # 辞書を作成　　　辞書内に配列を作成
     tags = {}
     likes = {}
-    # 投稿idを取得
+    comment_counts = {}
     for blogarticle in blogarticles:
         #blogarticleのidと一致するものをTag_relationから取得        
         relation_to_tags = Tag_relation.query.filter_by(article_id=blogarticle.id)
@@ -647,13 +647,8 @@ def show_user():
         tags[blogarticle.id] = box
 
         #コメント数を計算
-        comments=Comment.query.filter_by(blog_id = blogarticle.id).all()
-        counts = 0
-        comment_counts = {}
-        for comment in comments:
-            counts = counts + 1
-        
-        comment_counts[blogarticle.id] = counts
+        comments = Comment.query.filter_by(blog_id = blogarticle.id).all()
+        comment_counts[blogarticle.id] = len(comments)
         
 
     return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags, likes=likes, comment_counts=comment_counts)
