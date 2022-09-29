@@ -17,12 +17,16 @@
                         <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
                         {% endfor %}
                         <p>作成日時：{{ blogarticle.created_at.strftime("%Y/%m/%d/%H:%M") }}</p>
-                        <p class="like-count"><span class="fas fa-heart heart red"></span>{{ likes[blogarticle.id] }}</p>
+                        <p class="like-count"><span class="fas fa-heart heart red"></span>{{ likes[blogarticle.id] }}<span style="display:inline" class="fas fa-regular fa-comment comment-mark"></span>{{ comment_counts[blogarticle.id] }}</p>
+                       
                         <a href="/add_tag/{{ blogarticle.id}}" class="user">タグの追加</a>
                         <a href="/delete_tag/{{ blogarticle.id }}" class="user">タグの削除</a>
                         <br>
                         <a href="/update/{{ blogarticle.id }}" class="user" role="button">記事を編集する</a>
                         <a href="/delete/{{ blogarticle.id }}" class="user" id="user" role="button">記事を削除する</a>
+                        <a href='/article/{{blogarticle.id}}' class="comment-a" role="button"><button type="button" class="comment-button">投稿ページへ</button></a>
+
+
                     </div>
                     {% endfor %}
                 </article>
