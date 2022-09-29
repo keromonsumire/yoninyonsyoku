@@ -637,7 +637,17 @@ def show_user():
             box.append(tag_dict)
         tags[blogarticle.id] = box
 
-    return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags, likes=likes)
+        #コメント数を計算
+        comments=Comment.query.filter_by(blog_id = blogarticle.id).all()
+        counts = 0
+        comment_counts = {}
+        for comment in comments:
+            counts = counts + 1
+        
+        comment_counts[blogarticle.id] = counts
+        
+
+    return render_template('show_user.html', blogarticles=blogarticles, content=content, tags = tags, likes=likes, comment_counts=comment_counts)
 
 #個別記事の表示
 @app.route('/article/<int:id>', methods=['GET', 'POST'])
