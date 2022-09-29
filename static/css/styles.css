@@ -814,4 +814,11 @@ p {
   color: black;
 }
 
+.comment-mark{
+  font-size:2em;
+}
 
+.user-show-photo:hover{
+  opacity:0.8;
+  cursor:pointer;
+}

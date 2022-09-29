@@ -9,7 +9,7 @@
                     {% for blogarticle in blogarticles %}
                     <div class="blog-content2">
                         <div class="search-photo">
-                            <img src="/api_image/{{ blogarticle.image_id }}">
+                            <a class="user-show-photo" href="/article/{{ blogarticle.id}}"><img src="/api_image/{{ blogarticle.image_id }}"></a>
                         </div>
                         <a href="/image_update/{{ blogarticle.id }}" class="user" role="button">サムネイルを編集する</a>
                         <h1 class="title">{{ blogarticle.title }}</h1>
@@ -17,7 +17,7 @@
                         <p class='tag{{tag["type"]}}'>{{ tag["name"] }}</p>
                         {% endfor %}
                         <p>作成日時：{{ blogarticle.created_at.strftime("%Y/%m/%d/%H:%M") }}</p>
-                        <p class="like-count"><span class="fas fa-heart heart red"></span>{{ likes[blogarticle.id] }}<span style="display:inline" class="fas fa-regular fa-comment comment-mark"></span>{{ comment_counts[blogarticle.id] }}</p>
+                        <p class="like-count"><span class="fas fa-heart heart red"></span>{{ likes[blogarticle.id] }}&nbsp;&nbsp;<span class="fas fa-regular fa-comment comment-mark"></span>{{ comment_counts[blogarticle.id] }}</p>
                        
                         <a href="/add_tag/{{ blogarticle.id}}" class="user">タグの追加</a>
                         <a href="/delete_tag/{{ blogarticle.id }}" class="user">タグの削除</a>
