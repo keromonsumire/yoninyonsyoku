@@ -582,6 +582,19 @@ def delete(id):
     for tagrelation in tagrelations:
         tag_ids.append(tagrelation.tag_id)
         db.session.delete(tagrelation)
+    #Likeの削除
+    likes = Like.query.filter_by(blog_id=id).all()
+    for like in likes:
+        db.session.delete(like)
+    #imageの削除
+    images = Images.query.filter_by(id=blogarticle.image_id).all()
+    for image in images:
+        db.session.delete(image)
+    #commentの削除
+    comments = Comment.query.filter_by(blog_id=id).all()
+    for comment in comments:
+        db.session.delete(comment)
+    #記事の削除
     db.session.delete(blogarticle)
     db.session.commit()
     #どの記事にも紐づいていないタグの削除
