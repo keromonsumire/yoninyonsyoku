@@ -333,7 +333,7 @@ def create():
                     return render_template('create.html')
         else:
             # BlogArticleのインスタンスを作成
-            blogarticle = BlogArticle(title=title, user_id=current_user.id, )
+            blogarticle = BlogArticle(title=title, user_id=current_user.id, created_at=datetime.now(pytz.timezone('Asia/Tokyo')))
             db.session.add(blogarticle)
             db.session.commit()
 
@@ -696,7 +696,7 @@ def show_article(id):
 
     else:
         comment = request.form.get('comment')
-        comment_instance = Comment(blog_id = id, contributor_id = current_user.id, text = comment)
+        comment_instance = Comment(blog_id = id, contributor_id = current_user.id, text = comment, created_at=datetime.now(pytz.timezone('Asia/Tokyo')))
         db.session.add(comment_instance)
         db.session.commit()
 
