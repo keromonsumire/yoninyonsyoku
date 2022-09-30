@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import pytz
 import os, sys
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -333,7 +333,8 @@ def create():
                     return render_template('create.html')
         else:
             # BlogArticleのインスタンスを作成
-            blogarticle = BlogArticle(title=title, user_id=current_user.id, created_at=datetime.now(pytz.timezone('Asia/Tokyo')))
+            JST = timezone(timedelta(hours=+9), 'JST')
+            blogarticle = BlogArticle(title=title, user_id=current_user.id, created_at=datetime.now(JST))
             db.session.add(blogarticle)
             db.session.commit()
 
@@ -696,7 +697,8 @@ def show_article(id):
 
     else:
         comment = request.form.get('comment')
-        comment_instance = Comment(blog_id = id, contributor_id = current_user.id, text = comment, created_at=datetime.now(pytz.timezone('Asia/Tokyo')))
+        JST = timezone(timedelta(hours=+9), 'JST')
+        comment_instance = Comment(blog_id = id, contributor_id = current_user.id, text = comment, created_at=datetime.now(JST))
         db.session.add(comment_instance)
         db.session.commit()
 
