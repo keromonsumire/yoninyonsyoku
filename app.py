@@ -673,8 +673,8 @@ def show_article(id):
     blogarticle = BlogArticle.query.get(id)
     like_count = len(Like.query.filter_by(blog_id=id).all())
     like_check = True
-    if Like.query.filter_by(blog_id=id).filter_by(user=request.remote_addr).first() is None:
-            like_check = False
+    if not f"{id}" in session:
+        like_check = False
     if request.method == "GET":
         user = User.query.filter_by(id=blogarticle.user_id).all()
         user_name = user[0].username
@@ -768,16 +768,11 @@ def image_update(id):
 @app.route('/like/<int:id>', methods=['GET'])
 def like(id):
     if request.method == 'GET':
-        existance = Like.query.filter_by(blog_id=id).filter_by(user=request.remote_addr).first()
-        print(existance)
-        print(request.remote_addr)
-        if existance is None:
+        if not f"{id}" in session:
             like = Like(blog_id=id, user=request.remote_addr)
-            print(like)
             db.session.add(like)
-        else:
-            db.session.delete(existance)
-        db.session.commit()
+            db.session.commit()
+        session[f"{id}"] = True
         return redirect(f'/article/{id}')
 
 
